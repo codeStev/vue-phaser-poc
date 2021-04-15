@@ -16,6 +16,7 @@ module.exports = {
     .exclude
     .add(/node_modules/)
     .add(/src\/assets\/gameAssets/)
+    .add(/src\\assets\\gameAssets/)
     .end()
     .use('url-loader')
     .loader('url-loader')
@@ -31,6 +32,7 @@ module.exports = {
      .test(/\.(jpe?g|png|gif|svg)$/i)
      .include
      .add(/src\/assets\/gameAssets/)
+     .add(/src\\assets\\gameAssets/)
      .end()
        .use('file-loader')
          .loader('file-loader?name=[name].[ext]')
