@@ -15,7 +15,7 @@ export default class GameScene extends Scene{
     private bullets : (Phaser.GameObjects.Image & {body : Phaser.Physics.Arcade.Body})[]
     //private bullet : Phaser.GameObjects.Image & {body : Phaser.Physics.Arcade.Body}
     private playerParticles : Phaser.GameObjects.Particles.ParticleEmitterManager
-    private backgroundParticles : Phaser.GameObjects.Particles.ParticleEmitterManager
+    //private backgroundParticles : Phaser.GameObjects.Particles.ParticleEmitterManager
     constructor(){
         super(sceneConfig)
     }
@@ -58,36 +58,36 @@ export default class GameScene extends Scene{
         x: this.player.getBottomCenter().x,
         y: this.player.getBottomCenter().y+10
         });
-        this.backgroundParticles = this.add.particles('megaset', [
-            {
-                frame: 'blue_ball',
-                emitZone: { source: offscreen },
-                deathZone: { source: screen, type: 'onLeave' },
-                frequency: 100,
-                speedX: { min: 80, max: 120 },
-                lifespan: 30000,
-                scale: 0.5
-            },
-            {
-                frame: 'red_ball',
-                emitZone: { source: offscreen },
-                deathZone: { source: screen, type: 'onLeave' },
-                frequency: 150,
-                speedX: { min: 180, max: 220 },
-                lifespan: 30000,
-                scale: 0.8
-            },
-            {
-                frame: 'yellow_ball',
-                emitZone: { source: offscreen },
-                deathZone: { source: screen, type: 'onLeave' },
-                frequency: 500,
-                quantity: 4,
-                speedX: { min: 280, max: 320 },
-                lifespan: 30000
-            },
-        ]);
-    }
+    //     this.backgroundParticles = this.add.particles('megaset', [
+    //         {
+    //             frame: 'blue_ball',
+    //             emitZone: { source: offscreen },
+    //             deathZone: { source: screen, type: 'onLeave' },
+    //             frequency: 100,
+    //             speedX: { min: 80, max: 120 },
+    //             lifespan: 30000,
+    //             scale: 0.5
+    //         },
+    //         {
+    //             frame: 'red_ball',
+    //             emitZone: { source: offscreen },
+    //             deathZone: { source: screen, type: 'onLeave' },
+    //             frequency: 150,
+    //             speedX: { min: 180, max: 220 },
+    //             lifespan: 30000,
+    //             scale: 0.8
+    //         },
+    //         {
+    //             frame: 'yellow_ball',
+    //             emitZone: { source: offscreen },
+    //             deathZone: { source: screen, type: 'onLeave' },
+    //             frequency: 500,
+    //             quantity: 4,
+    //             speedX: { min: 280, max: 320 },
+    //             lifespan: 30000
+    //         },
+    //     ]);
+     }
     
     public update(){
         const CursorKeys = this.input.keyboard.createCursorKeys()
@@ -102,7 +102,7 @@ export default class GameScene extends Scene{
             this.player.body.setVelocityX(0)
         }
         const posPlayerTop = this.player.getTopCenter()
-        const posPlayerBottom= this.player.getTopCenter()
+        const posPlayerBottom= this.player.getCenter()
         const playerParticleEmitter = this.playerParticles.emitters.first
 
         playerParticleEmitter.setSpeed(this.player.body.speed)
