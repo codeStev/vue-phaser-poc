@@ -29,7 +29,7 @@ module.exports = {
     .end()
     // // add replacement loader(s)
      gameAssetRule
-     .test(/\.(jpe?g|png|gif|svg)$/i)
+     .test(/\.(jpe?g|png|gif|svg|mp3)$/i)
      .include
      .add(/src\/assets\/gameAssets/)
      .add(/src\\assets\\gameAssets/)

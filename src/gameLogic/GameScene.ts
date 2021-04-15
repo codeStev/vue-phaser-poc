@@ -3,6 +3,7 @@ import Ship from '../assets/gameAssets/ship.png'
 import Fire from '../assets/gameAssets/particles/fire.png'
 import MegaSet from '../assets/gameAssets/particles/megaset-0.png'
 import MegaSetJSON from '../assets/gameAssets/particles/megaset-0.json'
+import Music from '../assets/audio/music_zapsplat_game_music_action_retro_8_bit_repeating_016.mp3'
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: true,
@@ -11,6 +12,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   };
 
 export default class GameScene extends Scene{
+
     private player : Phaser.GameObjects.Image & { body: Phaser.Physics.Arcade.Body };
     private bullets : (Phaser.GameObjects.Image & {body : Phaser.Physics.Arcade.Body})[]
     //private bullet : Phaser.GameObjects.Image & {body : Phaser.Physics.Arcade.Body}
@@ -29,6 +31,7 @@ export default class GameScene extends Scene{
         this.load.image('fire',Fire)
         this.load.image('ship',Ship)
         this.load.atlas('megaset', MegaSet, MegaSetJSON);
+        this.load.audio('theme', Music);
     }
     public create(){
         
@@ -45,6 +48,11 @@ export default class GameScene extends Scene{
         console.log(viewHeight)
         const offscreen = new Phaser.Geom.Rectangle(-400, 0, 400, 600);
         const screen = new Phaser.Geom.Rectangle(-400, 0, 1600, 600);
+        const music = this.sound.add('theme', {
+            volume: 0.05,
+            loop: true
+        });
+        music.play();
     this.playerParticles.createEmitter({
         alpha: { start: 1, end: 0 },
         scale: { start: 0.5, end: 2.5 },
