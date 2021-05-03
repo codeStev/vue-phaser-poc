@@ -1,6 +1,6 @@
 # gamedemo2
 ## Requirements
-Node Version 14.16.1
+Node Version 14.16.1 (Could also work with other node 14.xx.x versions, but definitely breaks on >= 15.xx.x)
 ## Project setup
 ```
 npm install
