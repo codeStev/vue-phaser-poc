@@ -1,6 +1,6 @@
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import Phaser, { Scene } from 'phaser'
-import GameScene from '@/gameLogic/GameScene'
+import GameScene from '@/game/scenes/GameScene'
 
 @Module
 export default class Game extends VuexModule {

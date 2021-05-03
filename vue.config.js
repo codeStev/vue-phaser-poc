@@ -13,8 +13,8 @@ module.exports = {
 		imageRule
 			.test(/\.(png|jpe?g|gif|webp)(\?.*)?$/)
 			.exclude.add(/node_modules/)
-			.add(/src\/assets\/gameAssets/)
-			.add(/src\\assets\\gameAssets/)
+			.add(/src\/game\/gameAssets/)
+			.add(/src\/game\/gameAssets/)
 			.end()
 			.use('url-loader')
 			.loader('url-loader')
@@ -28,8 +28,8 @@ module.exports = {
 		// // add replacement loader(s)
 		gameAssetRule
 			.test(/\.(jpe?g|png|gif|svg)$/i)
-			.include.add(/src\/assets\/gameAssets/)
-			.add(/src\\assets\\gameAssets/)
+			.include.add(/src\/game\/gameAssets/)
+			.add(/src\/game\/gameAssets/)
 			.end()
 			.use('file-loader')
 			.loader('file-loader?name=[name].[ext]')
@@ -38,7 +38,7 @@ module.exports = {
 		// jsonRule
 		// .test(/\.(json)$/i)
 		// .include
-		// .add(/src\/assets\/gameAssets/)
+		// .add(/src\/game\/gameAssets/)
 		// .end()
 		//   .use('json-loader')
 		//     .loader('json-loader?name=[name].[ext]')
