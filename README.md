@@ -1,5 +1,6 @@
 # gamedemo2
-
+## Requirements
+Node Version 14.16.1
 ## Project setup
 ```
 npm install
