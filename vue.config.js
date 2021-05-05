@@ -14,7 +14,7 @@ module.exports = {
 			.test(/\.(png|jpe?g|gif|webp)(\?.*)?$/)
 			.exclude.add(/node_modules/)
 			.add(/src\/game\/gameAssets/)
-			.add(/src\/game\/gameAssets/)
+			.add(/src\\game\\gameAssets/)
 			.end()
 			.use('url-loader')
 			.loader('url-loader')
@@ -29,7 +29,7 @@ module.exports = {
 		gameAssetRule
 			.test(/\.(jpe?g|png|gif|svg)$/i)
 			.include.add(/src\/game\/gameAssets/)
-			.add(/src\/game\/gameAssets/)
+			.add(/src\\game\\gameAssets/)
 			.end()
 			.use('file-loader')
 			.loader('file-loader?name=[name].[ext]')
