@@ -51,5 +51,4 @@ export default class Game extends VuexModule {
     deleteSceneByKey(key : string) :void {
        this.context.commit('deleteScene',key)
     }
-    
   }
