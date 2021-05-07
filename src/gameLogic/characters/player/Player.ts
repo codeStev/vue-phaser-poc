@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+//add player method to Phaser interface GameObjectFactory
 declare global
 {
 	namespace Phaser.GameObjects
