@@ -1,5 +1,5 @@
 <template>
-  <v-container fill-height class="home">
+  <v-container fluid class="home">
 <game-component></game-component>  
 </v-container>
 </template>

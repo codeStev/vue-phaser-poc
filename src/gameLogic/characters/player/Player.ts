@@ -23,26 +23,25 @@ export default class Player extends Phaser.GameObjects.Image{
     }
     update(cursors: Phaser.Types.Input.Keyboard.CursorKeys){
 
-		const speed = 300
+		const speed = 1300
 		const leftDown = cursors.left?.isDown
 		const rightDown = cursors.right?.isDown
-		console.log(leftDown)
-        console.log(rightDown)
+		
 
 		if (leftDown)
 		{
 			
-			this.body.setVelocity(-speed, 0)
+			this.body.setVelocityX(-speed)
 		}
 		else if (rightDown)
 		{
 			
-			this.body.setVelocity(speed, 0)
+			this.body.setVelocityX(speed)
 		}	
 		else
 		{
 			
-			this.body.setVelocity(0, 0)
+			this.body.setVelocityX(0)
 		}
 	}
 }

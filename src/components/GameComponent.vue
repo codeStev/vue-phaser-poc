@@ -1,5 +1,5 @@
 <template>
-    <v-container fill-height id="game"></v-container>
+    <v-container fluid id="game"></v-container>
 </template>
 
 <script lang="ts">
@@ -20,3 +20,9 @@ export default Vue.extend({
     }
 })
 </script>
+<style scoped>
+#game{
+    max-height: 95vh;
+    
+}
+</style>

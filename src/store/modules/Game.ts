@@ -8,9 +8,13 @@ export default class Game extends VuexModule {
        title : 'SpaceInvaderZZZ',
        type : Phaser.AUTO,
        scale : {
-           width : '100%',
-           height : '100%'
-       },
+        mode: Phaser.Scale.FIT,
+        parent: 'game',
+        width : 1600,
+        height : 1200,
+        autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
+        
+      },
        physics : {
            default: 'arcade',
            arcade : {
