@@ -1,9 +1,10 @@
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import Phaser, { Scene } from 'phaser'
 import GameScene from '@/game/scenes/GameScene'
-
+//Game module for vuex store
 @Module
 export default class Game extends VuexModule {
+  //default Game Config
   private gameConfig : Phaser.Types.Core.GameConfig = {
        title : 'SpaceInvaderZZZ',
        type : Phaser.AUTO,
@@ -35,7 +36,7 @@ export default class Game extends VuexModule {
        backgroundColor : '#000000'
    }
     game = new Phaser.Game(this.gameConfig)
-
+    
     @Mutation
     addScene(key : string,scene: Scene) : void {
       this.game.scene.add(key,scene)
@@ -45,12 +46,12 @@ export default class Game extends VuexModule {
       this.game.scene.getScene(key)
     }
   
-    // action 'incr' commits mutation 'increment' when done with return value as payload
+    //adds scene to game config
     @Action
     addSceneWithKey(key : string, scene : Scene) : void {
         this.context.commit('addScene',{key,scene})
     }
-    // action 'decr' commits mutation 'decrement' when done with return value as payload
+    //deletes scene from game config
     @Action
     deleteSceneByKey(key : string) :void {
        this.context.commit('deleteScene',key)

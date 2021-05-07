@@ -23,7 +23,7 @@ export default class Player extends Phaser.GameObjects.Image{
         return
     }
     update(cursors: Phaser.Types.Input.Keyboard.CursorKeys){
-
+		//player movement
 		const speed = 1300
 		const leftDown = cursors.left?.isDown
 		const rightDown = cursors.right?.isDown
@@ -46,15 +46,13 @@ export default class Player extends Phaser.GameObjects.Image{
 		}
 	}
 }
+//register added method player on GameObjectFactory implementation
 Phaser.GameObjects.GameObjectFactory.register('player', function (this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, texture: string, frame?: string | number) {
+	//create player object
 	const player = new Player(this.scene, x, y, texture, frame)
-    
 	this.displayList.add(player)
 	this.updateList.add(player)
-
+	//enable physics on player (for world bounds)
 	this.scene.physics.world.enableBody(player, Phaser.Physics.Arcade.DYNAMIC_BODY)
-
-	//player.body.setSize(player.width * 0.5, player.height * 0.8)
-
 	return player
 })
