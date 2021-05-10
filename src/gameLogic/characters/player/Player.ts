@@ -32,9 +32,6 @@ export default class Player extends Phaser.GameObjects.Image{
 		const leftDown = cursors.left?.isDown
 		const rightDown = cursors.right?.isDown
 		const spaceDown = cursors.space?.isDown
-		const posPlayerTop = this.getTopCenter()
-        const posPlayerBottom= this.getTopCenter()
-		
 
 		if (leftDown)
 		{
