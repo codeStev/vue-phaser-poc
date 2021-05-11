@@ -1,5 +1,5 @@
 
-import Phaser from 'phaser'
+import Phaser, { Game, Time } from 'phaser'
 
 declare global
 {
@@ -12,8 +12,10 @@ declare global
 	}
 }
 
+
 export default class Brute extends Phaser.GameObjects.Image{
 	body :  Phaser.Physics.Arcade.Body 
+	lifePoints = 1
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number)
 	{
@@ -21,30 +23,17 @@ export default class Brute extends Phaser.GameObjects.Image{
 	
 
 	}
-	
+
 	init(){
 		return
 	}
     preUpdate(){
-		//this.play
-		//console.log(this.body.x)
         return
 	}
-	revertMotion(){
-		console.log("blubb")
-		this.body.setVelocityX(-150)
-	}
-	
-    update(){
-		console.log("collideWorldBounds : "+this.body.collideWorldBounds)
-		console.log("onWorldBounds : "+this.body.onWorldBounds)
-		
 
-		
-			
+    update(){
+		return
 	}
-		
-	
 
 }
 
@@ -56,6 +45,6 @@ Phaser.GameObjects.GameObjectFactory.register('brute', function (this: Phaser.Ga
 	brute.body.setCollideWorldBounds(true)
 	brute.body.onWorldBounds = true	
 	brute.body.setImmovable(false)
-	brute.body.setVelocityX(150)
+	brute.body.setVelocityX(500)
 	return brute
 })
