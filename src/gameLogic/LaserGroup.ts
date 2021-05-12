@@ -2,6 +2,8 @@ import Laser from "./Laser";
 
 export default class LaserGroup extends Phaser.Physics.Arcade.Group
 {
+
+	laser : Laser
 	constructor(scene: Phaser.Scene) {
 		super(scene.physics.world, scene);
 
@@ -15,10 +17,10 @@ export default class LaserGroup extends Phaser.Physics.Arcade.Group
 	}
 
 	fireBullet(x : number, y : number) {
-		const laser = this.getFirstDead(false);
+		this.laser = this.getFirstDead(false);
 
-		if(laser) {
-			laser.fire(x, y);
+		if(this.laser) {
+			this.laser.fire(x, y);
 		}
 	}
 }

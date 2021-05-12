@@ -1,4 +1,6 @@
 export default class Laser extends Phaser.Physics.Arcade.Sprite{
+    body :  Phaser.Physics.Arcade.Body 
+
     constructor(scene : Phaser.Scene, x : number, y : number){
         super(scene, x, y, 'laser')
     }
@@ -19,5 +21,10 @@ export default class Laser extends Phaser.Physics.Arcade.Sprite{
             this.setActive(false);
             this.setVisible(false);
         }
+    }
+
+    kill(){
+        this.setActive(false)
+        this.setVisible(false);
     }
 }

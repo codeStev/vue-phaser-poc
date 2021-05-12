@@ -1,5 +1,6 @@
 import LaserGroup from '@/gameLogic/LaserGroup'
 import Phaser from 'phaser'
+import Character from './Character'
 //add player method to Phaser interface GameObjectFactory
 declare global
 {
@@ -12,8 +13,9 @@ declare global
 	}
 }
 
-export default class Player extends Phaser.GameObjects.Image{
+export default class Player extends Character{
 	body :  Phaser.Physics.Arcade.Body 
+	lifepoints = 3
 	laserGroup = new LaserGroup(this.scene)
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number)

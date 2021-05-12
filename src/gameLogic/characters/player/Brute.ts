@@ -1,5 +1,6 @@
 
 import Phaser, { Game, Time } from 'phaser'
+import Character from './Character'
 
 declare global
 {
@@ -13,7 +14,7 @@ declare global
 }
 
 
-export default class Brute extends Phaser.GameObjects.Image{
+export default class Brute extends Character{
 	body :  Phaser.Physics.Arcade.Body 
 	lifePoints = 1
 
@@ -33,6 +34,10 @@ export default class Brute extends Phaser.GameObjects.Image{
 
     update(){
 		return
+	}
+
+	kill(){
+		this.destroy();
 	}
 
 }
