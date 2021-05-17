@@ -1,16 +1,16 @@
+import { v4 as uuidv4 } from 'uuid';
 export default class Laser extends Phaser.Physics.Arcade.Sprite{
     body :  Phaser.Physics.Arcade.Body 
 
     constructor(scene : Phaser.Scene, x : number, y : number){
         super(scene, x, y, 'laser')
+        this.setName(uuidv4())
     }
 
-    fire(x : number, y : number){
+    move(x : number, y : number){
         this.body.reset(x, y);
-
         this.setActive(true);
         this.setVisible(true);
-
         this.setVelocityY(-1000);
     }
 
@@ -18,13 +18,11 @@ export default class Laser extends Phaser.Physics.Arcade.Sprite{
         super.preUpdate(time, delta);
 
         if (this.y <= 0) {
-            this.setActive(false);
-            this.setVisible(false);
+            this.destroy()
         }
     }
 
     kill(){
-        this.setActive(false)
-        this.setVisible(false);
+        this.destroy();
     }
 }

@@ -1,6 +1,6 @@
 
 import Phaser, { Game, Time } from 'phaser'
-import Character from './Character'
+import Enemy from './Enemy'
 
 declare global
 {
@@ -14,13 +14,12 @@ declare global
 }
 
 
-export default class Brute extends Character{
-	body :  Phaser.Physics.Arcade.Body 
-	lifePoints = 1
+export default class Brute extends Enemy{
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number)
 	{
 		super(scene, x, y, texture, frame)
+		this.lifepoints = 3
 	
 
 	}
@@ -35,10 +34,7 @@ export default class Brute extends Character{
     update(){
 		return
 	}
-
-	kill(){
-		this.destroy();
-	}
+	
 
 }
 

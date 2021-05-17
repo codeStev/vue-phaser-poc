@@ -3,7 +3,7 @@ import Laser from "./Laser";
 export default class LaserGroup extends Phaser.Physics.Arcade.Group
 {
 
-	laser : Laser
+
 	constructor(scene: Phaser.Scene) {
 		super(scene.physics.world, scene);
 
@@ -14,13 +14,17 @@ export default class LaserGroup extends Phaser.Physics.Arcade.Group
 			visible: false,
 			classType: Laser
 		});
+		this.maxSize = 2
 	}
 
 	fireBullet(x : number, y : number) {
-		this.laser = this.getFirstDead(false);
-
-		if(this.laser) {
-			this.laser.fire(x, y);
+		let laser : Laser;
+		if(this.countActive()<=this.maxSize){
+			laser = this.create(x,y)!;
+		}
+		
+		if(laser!) {
+			laser.move(x, y);
 		}
 	}
 }

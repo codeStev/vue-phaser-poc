@@ -4,10 +4,14 @@ import BruteAsset from '../gameAssets/enemies/enemyGreen4.png'
 import LaserAsset from '../gameAssets/effects/particle-effects/laserRed01.png'
 import Player from "@/gameLogic/characters/player/Player";
 import "@/gameLogic/characters/player/Player"
-import Brute from "@/gameLogic/characters/player/Brute";
-import "@/gameLogic/characters/player/Brute"
+import Brute from "@/gameLogic/characters/enemies/Brute";
+import "@/gameLogic/characters/enemies/Brute"
 import LaserGroup from "@/gameLogic/LaserGroup"
 import Laser from "@/gameLogic/Laser";
+import Enemy from "@/gameLogic/characters/enemies/Enemy";
+import Character from "@/gameLogic/characters/Character";
+import "@/gameLogic/characters/Character";
+import { prototype } from "vue/types/umd";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: true,
@@ -19,10 +23,11 @@ export default class GameScene extends Scene{
     
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
     private player! : Player
-    private brute! : Brute
+    private enemies! : Enemy[]
    
     constructor(){
         super(sceneConfig)
+        this.enemies = []
     }
 
     moveDown(body : Phaser.Physics.Arcade.Body,blockedLeft:boolean){
@@ -33,6 +38,7 @@ export default class GameScene extends Scene{
     }
   
     public init(){
+        //create basic formation
         const moveDown = this.moveDown      
         let collideCounter = 0
         this.physics.world.on("worldbounds",function(body: Phaser.Physics.Arcade.Body,blockedUp : boolean, blockedDown : boolean, blockedLeft : boolean, blockedRight : boolean){
@@ -69,7 +75,16 @@ export default class GameScene extends Scene{
         this.physics.world.enable([this.player])
         this.player.body.setCollideWorldBounds(true);
 
-        this.brute = this.add.brute(startPosX, 300, 'enemy1')
+        //this.brute = this.add.brute(startPosX, 300, 'enemy1')
+        const enemyCount = 6
+        let x = 0
+        const xOffset = 100
+        for (let i = 0; i < 6; i++) {
+            x = x + xOffset            
+            this.enemies.push(this.add.brute(x,300,'enemy1'))
+            
+            
+        }
 
      }
     
@@ -80,23 +95,26 @@ export default class GameScene extends Scene{
 			this.player.update(this.cursors)
         }
 
-        
-        if(this.player.laserGroup){
-            this.physics.overlap(
-                this.player.laserGroup,
-                this.brute,
-                this._laserHitsAlien,
-                undefined,
-                this
-            )
+        for (let i = 0;i<this.enemies.length;i++){
+            if(this.player.laserGroup){
+                this.physics.overlap(
+                    this.player.laserGroup,
+                    this.enemies[i],
+                    this._laserHitsAlien,
+                    undefined,
+                    this
+                )
+            }
         }
+      
     }
 
-    private _laserHitsAlien(laser : Phaser.Types.Physics.Arcade.GameObjectWithBody, brute : Phaser.Types.Physics.Arcade.GameObjectWithBody){
-        console.log('hit');
-        console.log(laser);
+    private _laserHitsAlien(enemy : Phaser.Types.Physics.Arcade.GameObjectWithBody, laser : Phaser.Types.Physics.Arcade.GameObjectWithBody){
+        const enemyOriginal: Enemy = this.enemies.find(element => element.name == enemy.name)!;
+        console.log(enemyOriginal.lifepoints);
+        enemyOriginal.takeDamage(this.player.damage);
+        console.log(enemyOriginal.lifepoints);
         (<Laser> laser).kill();
-        (<Brute> brute).kill();
         return true;
     }
 }
