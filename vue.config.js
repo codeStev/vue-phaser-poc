@@ -45,7 +45,7 @@ module.exports = {
 		//     .end()
 		config.plugin('fork-ts-checker').tap((args) => {
 			let totalmem = Math.floor(os.totalmem() / 1024 / 1024);
-			let allowUseMem = totalmem > 12000 ? 8192 : 1000;
+			let allowUseMem = totalmem > 12000 ? 4096 : 1000;
 			args[0].memoryLimit = allowUseMem;
 			return args;
 		});
