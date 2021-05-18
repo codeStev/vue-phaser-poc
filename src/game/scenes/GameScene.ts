@@ -1,9 +1,9 @@
 import {  GameObjects, Scene } from "phaser";
-import ShipAsset from '../gameAssets/player/playerShip3_red.png'
-import BruteAsset from '../gameAssets/enemies/enemyGreen4.png'
-import GunnerAsset from '../gameAssets/enemies/enemyBlue1.png'
-import RedLaserAsset from '../gameAssets/effects/particle-effects/laserRed01.png'
-import BlueLaserAsset from '../gameAssets/effects/particle-effects/laserBlue02.png'
+import ShipAsset from '../gameAssets/player/playerShip3_red.png';
+import BruteAsset from '../gameAssets/enemies/enemyGreen4.png';
+import GunnerAsset from '../gameAssets/enemies/enemyBlue1.png';
+import RedLaserAsset from '../gameAssets/effects/particle-effects/laserRed01.png';
+import BlueLaserAsset from '../gameAssets/effects/particle-effects/laserBlue02.png';
 import Player from "@/gameLogic/characters/player/Player";
 import "@/gameLogic/characters/player/Player"
 import "@/gameLogic/characters/enemies/Brute"
@@ -15,6 +15,7 @@ import "@/gameLogic/characters/enemies/Gunner";
 import "@/gameLogic/characters/Character";
 import ShootingEnemy from "@/gameLogic/characters/enemies/ShootingEnemy";
 import LaserKeys from "@/gameLogic/LaserKeys";
+import LaserGroup from "@/gameLogic/LaserGroup";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: true,
@@ -72,62 +73,75 @@ export default class GameScene extends Scene{
     
     public create(){
     
+        const enemyLaserGroup : LaserGroup = new LaserGroup(this,LaserKeys.RED)
+        enemyLaserGroup.maxSize=2
+        const playerLaserGroup : LaserGroup = new LaserGroup(this,'blueLaser')
         this.cameras.main.setBackgroundColor("#000000");
         const startPosX : number = this.cameras.main.centerX
         const startPosY : number = this.cameras.main.centerY*1.8
 
         this.player = this.add.player(startPosX,startPosY,'ship')
+        this.player.laserGroup = playerLaserGroup
         this.physics.world.enable([this.player])
         this.player.body.setCollideWorldBounds(true);
-
         const enemyCount = 6
         let x = 0
         const xOffset = 100
         for (let i = 0; i < 6; i++) {
             x = x + xOffset            
             this.enemies.push(this.add.brute(x,300,'enemy1'))
-            this.enemies.push(this.add.gunner(x,600,'enemy2'))
+
+            const gunner = this.add.gunner(x,600,'enemy2')
+            gunner.lasers = enemyLaserGroup
+            this.enemies.push(gunner)
             
         }
 
      }
     
     public update(){
-
+        
         if (this.player)
 		{
 			this.player.update(this.cursors)
         }
-
-        for (let i = 0;i<this.enemies.length;i++){
+        this.enemies.forEach(element => {
             if(this.player.laserGroup){
                 this.physics.overlap(
                     this.player.laserGroup,
-                    this.enemies[i],
+                    element,
                     this._laserHitsAlien,
                     undefined,
                     this
                 )
-            }
-            if((<ShootingEnemy> this.enemies[i]).lasers){
-                (<ShootingEnemy>this.enemies[i]).shoot()
+         }
+        
+       
+            if((<ShootingEnemy> element).lasers){
+                (<ShootingEnemy>element).shoot()
                
 
                 this.physics.overlap(
-                    (<ShootingEnemy> this.enemies[i]).lasers,
+                    (<ShootingEnemy> element).lasers,
                     this.player,
                     this._laserHitsPlayer,
                     undefined,
                     this
                 )
             }
-        }
+        })
       
     }
 
     private _laserHitsAlien(enemy : Phaser.Types.Physics.Arcade.GameObjectWithBody, laser : Phaser.Types.Physics.Arcade.GameObjectWithBody){
         const enemyOriginal: Enemy = this.enemies.find(element => element.name == enemy.name)!;
         enemyOriginal.takeDamage(this.player.damage);
+        if(enemyOriginal.lifepoints <= 0){
+            const index = this.enemies.indexOf(enemyOriginal);
+            if (index > -1) {
+              this.enemies.splice(index, 1);
+            }        }
+   
         (<Laser> laser).kill();
         return true;
     }

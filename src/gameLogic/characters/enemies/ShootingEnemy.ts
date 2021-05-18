@@ -15,7 +15,4 @@ export default class ShootingEnemy extends Enemy{
         this.lasers.fireBullet(this.x, this.y +20, false, this.shootingDamage)
     }
     
-    hurensohnTimeEvent(){
-      this.scene.time.addEvent({ delay: 1000, callback: this.shoot, callbackScope: this, loop: true })
-    }
 }
