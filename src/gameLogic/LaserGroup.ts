@@ -4,27 +4,21 @@ export default class LaserGroup extends Phaser.Physics.Arcade.Group
 {
 
 
-	constructor(scene: Phaser.Scene) {
+	constructor(scene: Phaser.Scene, key : string) {
 		super(scene.physics.world, scene);
-
-		this.createMultiple({
-			frameQuantity: 1,  
-			key: 'laser',
-			active: false,
-			visible: false,
-			classType: Laser
-		});
-		this.maxSize = 2
+		this.defaultKey = key
+		this.classType=Laser
+		this.maxSize = 1
 	}
 
-	fireBullet(x : number, y : number) {
+	fireBullet(x : number, y : number,up: boolean, damage : number) {
 		let laser : Laser;
 		if(this.countActive()<=this.maxSize){
 			laser = this.create(x,y)!;
 		}
 		
 		if(laser!) {
-			laser.move(x, y);
+			laser.move(x, y, up);
 		}
 	}
 }

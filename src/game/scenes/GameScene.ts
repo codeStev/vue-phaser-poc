@@ -1,17 +1,20 @@
 import {  GameObjects, Scene } from "phaser";
 import ShipAsset from '../gameAssets/player/playerShip3_red.png'
 import BruteAsset from '../gameAssets/enemies/enemyGreen4.png'
-import LaserAsset from '../gameAssets/effects/particle-effects/laserRed01.png'
+import GunnerAsset from '../gameAssets/enemies/enemyBlue1.png'
+import RedLaserAsset from '../gameAssets/effects/particle-effects/laserRed01.png'
+import BlueLaserAsset from '../gameAssets/effects/particle-effects/laserBlue02.png'
 import Player from "@/gameLogic/characters/player/Player";
 import "@/gameLogic/characters/player/Player"
-import Brute from "@/gameLogic/characters/enemies/Brute";
 import "@/gameLogic/characters/enemies/Brute"
-import LaserGroup from "@/gameLogic/LaserGroup"
 import Laser from "@/gameLogic/Laser";
 import Enemy from "@/gameLogic/characters/enemies/Enemy";
 import Character from "@/gameLogic/characters/Character";
+import "@/gameLogic/characters/enemies/Gunner";
+
 import "@/gameLogic/characters/Character";
-import { prototype } from "vue/types/umd";
+import ShootingEnemy from "@/gameLogic/characters/enemies/ShootingEnemy";
+import LaserKeys from "@/gameLogic/LaserKeys";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: true,
@@ -62,7 +65,9 @@ export default class GameScene extends Scene{
         this.cursors = this.input.keyboard.createCursorKeys()
         this.load.image('ship',ShipAsset)
         this.load.image('enemy1', BruteAsset)
-        this.load.image('laser', LaserAsset)
+        this.load.image('enemy2', GunnerAsset)
+        this.load.image('redLaser', RedLaserAsset)
+        this.load.image('blueLaser', BlueLaserAsset)
     }
     
     public create(){
@@ -75,14 +80,13 @@ export default class GameScene extends Scene{
         this.physics.world.enable([this.player])
         this.player.body.setCollideWorldBounds(true);
 
-        //this.brute = this.add.brute(startPosX, 300, 'enemy1')
         const enemyCount = 6
         let x = 0
         const xOffset = 100
         for (let i = 0; i < 6; i++) {
             x = x + xOffset            
             this.enemies.push(this.add.brute(x,300,'enemy1'))
-            
+            this.enemies.push(this.add.gunner(x,600,'enemy2'))
             
         }
 
@@ -105,16 +109,31 @@ export default class GameScene extends Scene{
                     this
                 )
             }
+            if((<ShootingEnemy> this.enemies[i]).lasers){
+                (<ShootingEnemy>this.enemies[i]).shoot()
+               
+
+                this.physics.overlap(
+                    (<ShootingEnemy> this.enemies[i]).lasers,
+                    this.player,
+                    this._laserHitsPlayer,
+                    undefined,
+                    this
+                )
+            }
         }
       
     }
 
     private _laserHitsAlien(enemy : Phaser.Types.Physics.Arcade.GameObjectWithBody, laser : Phaser.Types.Physics.Arcade.GameObjectWithBody){
         const enemyOriginal: Enemy = this.enemies.find(element => element.name == enemy.name)!;
-        console.log(enemyOriginal.lifepoints);
         enemyOriginal.takeDamage(this.player.damage);
-        console.log(enemyOriginal.lifepoints);
         (<Laser> laser).kill();
         return true;
+    }
+    private _laserHitsPlayer(player : Phaser.Types.Physics.Arcade.GameObjectWithBody, laser : Phaser.Types.Physics.Arcade.GameObjectWithBody){
+        this.player.takeDamage(1);
+        (<Laser> laser).kill();
+        return true
     }
 }
