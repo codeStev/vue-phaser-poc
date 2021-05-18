@@ -13,7 +13,7 @@ const apiClient = {
     const response = await axios.post("/scores", newScore);
     return response.data;
   },
-  async deleteScore(scoreId: any) {
+  async deleteScore(scoreId: string) {
     const response = await axios.delete("/scores" + scoreId);
     return response.data;
   },
