@@ -21,18 +21,20 @@ export default class Brute extends Enemy{
 		super(scene, x, y, texture, frame)
 		this.lifepoints = 1
 		this.hittingDamage = 1
+		
 
 	}
 
-	init(){
-		return
-	}
     preUpdate(){
         return
 	}
 
     update(){
-		return
+		this.scene.physics.world.enableBody(this, Phaser.Physics.Arcade.DYNAMIC_BODY)
+		this.body.setCollideWorldBounds(true)
+		this.body.onWorldBounds = true	
+		this.body.setImmovable(false)
+		this.body.setVelocityX(500)
 	}
 	
 

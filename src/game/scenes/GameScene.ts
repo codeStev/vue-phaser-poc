@@ -17,6 +17,9 @@ import ShootingEnemy from "@/gameLogic/characters/enemies/ShootingEnemy";
 import LaserKeys from "@/gameLogic/LaserKeys";
 import LaserGroup from "@/gameLogic/LaserGroup";
 import LaserGroupEnemy from "@/gameLogic/LaserGroupEnemy";
+import CharacterKeys from "@/gameLogic/CharacterKeys";
+import TrojanHorse from "@/gameLogic/characters/enemies/TrojanHorse";
+import Gunner from "@/gameLogic/characters/enemies/Gunner";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: true,
@@ -28,7 +31,7 @@ export default class GameScene extends Scene{
     
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
     private player! : Player
-    private enemies! : Enemy[]
+    private enemies! : Enemy[] 
    
     constructor(){
         super(sceneConfig)
@@ -65,15 +68,16 @@ export default class GameScene extends Scene{
   
     public preload(){
         this.cursors = this.input.keyboard.createCursorKeys()
-        this.load.image('ship',ShipAsset)
-        this.load.image('enemy1', BruteAsset)
-        this.load.image('enemy2', GunnerAsset)
-        this.load.image('redLaser', RedLaserAsset)
-        this.load.image('blueLaser', BlueLaserAsset)
+        this.load.image(CharacterKeys.PLAYER,ShipAsset)
+        this.load.image(CharacterKeys.BRUTE, BruteAsset)
+        this.load.image(CharacterKeys.GUNNER, GunnerAsset)
+        this.load.image(LaserKeys.RED, RedLaserAsset)
+        this.load.image(LaserKeys.BLUE, BlueLaserAsset)
     }
     
     public create(){
-    
+        const trojanHorse : TrojanHorse = new TrojanHorse(this)
+        this.enemies = trojanHorse.init()
         const enemyLaserGroup : LaserGroupEnemy = new LaserGroupEnemy(this)
         enemyLaserGroup.maxSize=-1
         const playerLaserGroup : LaserGroup = new LaserGroup(this)
@@ -81,22 +85,18 @@ export default class GameScene extends Scene{
         const startPosX : number = this.cameras.main.centerX
         const startPosY : number = this.cameras.main.centerY*1.8
 
-        this.player = this.add.player(startPosX,startPosY,'ship')
+        this.player = this.add.player(startPosX,startPosY,CharacterKeys.PLAYER)
         this.player.laserGroup = playerLaserGroup
         this.physics.world.enable([this.player])
         this.player.body.setCollideWorldBounds(true);
-        const enemyCount = 6
-        let x = 0
-        const xOffset = 100
-        for (let i = 0; i < 6; i++) {
-            x = x + xOffset            
-            this.enemies.push(this.add.brute(x,300,'enemy1'))
-
-            const gunner = this.add.gunner(x,600,'enemy2')
-            gunner.lasers = enemyLaserGroup
-            this.enemies.push(gunner)
-            
-        }
+        
+      
+        this.enemies.forEach(enemy => {
+            if((<ShootingEnemy> enemy).lasers){
+                (<ShootingEnemy> enemy).lasers = enemyLaserGroup
+            }
+        });
+     
 
      }
     
