@@ -137,6 +137,7 @@ export default class GameScene extends Scene {
       this.player.update(this.cursors);
     }
 
+    // enemy hit event
     for (let i = 0; i < this.enemies.length; i++) {
       if (this.player.laserGroup) {
         this.physics.overlap(
@@ -148,8 +149,22 @@ export default class GameScene extends Scene {
         );
       }
     }
+
+    // protection hit event
+    for (let i = 0; i < this.protections.length; i++) {
+      if (this.player.laserGroup) {
+        this.physics.overlap(
+          this.player.laserGroup,
+          this.protections[i],
+          this._playerLaserHitsProtection,
+          undefined,
+          this
+        );
+      }
+    }
   }
 
+  // player Laser overlaps Alien
   private _laserHitsAlien(
     enemy: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     laser: Phaser.Types.Physics.Arcade.GameObjectWithBody
@@ -157,10 +172,20 @@ export default class GameScene extends Scene {
     const enemyOriginal: Enemy = this.enemies.find(
       (element) => element.name == enemy.name
     )!;
-    console.log(enemyOriginal.lifepoints);
     enemyOriginal.takeDamage(this.player.damage);
-    console.log(enemyOriginal.lifepoints);
     (<Laser>laser).kill();
     return true;
+  }
+
+  // player Laser overlaps protection
+  private _playerLaserHitsProtection(
+    protection: Phaser.Types.Physics.Arcade.GameObjectWithBody,
+    laser: Phaser.Types.Physics.Arcade.GameObjectWithBody
+  ) {
+    const protectionOriginal: Protection = this.protections.find(
+      (element) => element.name == protection.name
+    )!;
+    protectionOriginal.takeDamage(this.player.damage);
+    (<Laser>laser).kill();
   }
 }

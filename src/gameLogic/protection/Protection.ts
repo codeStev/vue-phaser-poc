@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import Character from "../characters/Character";
+import { v4 as uuidv4 } from 'uuid';
 
 declare global {
   namespace Phaser.GameObjects {
@@ -16,7 +17,7 @@ declare global {
 
 export default class Protection extends Character {
   body: Phaser.Physics.Arcade.Body;
-  lifepoints = 1;
+  lifepoints = 2;
 
   constructor(
     scene: Phaser.Scene,
@@ -26,6 +27,7 @@ export default class Protection extends Character {
     frame?: string | number
   ) {
     super(scene, x, y, texture, frame);
+    this.setName(uuidv4());
   }
 
   init() {
