@@ -75,7 +75,7 @@ export default class GameScene extends Scene{
     public create(){
     
         const enemyLaserGroup : LaserGroupEnemy = new LaserGroupEnemy(this)
-        enemyLaserGroup.maxSize=2
+        enemyLaserGroup.maxSize=-1
         const playerLaserGroup : LaserGroup = new LaserGroup(this)
         this.cameras.main.setBackgroundColor("#000000");
         const startPosX : number = this.cameras.main.centerX
@@ -118,7 +118,7 @@ export default class GameScene extends Scene{
             }
         
             if((<ShootingEnemy> element).lasers){
-                (<ShootingEnemy>element).shoot()
+                //(<ShootingEnemy>element).shoot()
                
 
                 this.physics.overlap(
@@ -144,11 +144,15 @@ export default class GameScene extends Scene{
     private _laserHitsAlien(enemy : Phaser.Types.Physics.Arcade.GameObjectWithBody, laser : Phaser.Types.Physics.Arcade.GameObjectWithBody){
         const enemyOriginal: Enemy = this.enemies.find(element => element.name == enemy.name)!;
         enemyOriginal.takeDamage(this.player.damage);
+        
+        if((<ShootingEnemy> enemyOriginal).shootingTimerEvent!){
+            (<ShootingEnemy> enemyOriginal).shootingTimerEvent.remove(false)
+        }
         if(enemyOriginal.lifepoints <= 0){
             const index = this.enemies.indexOf(enemyOriginal);
             if (index > -1) {
               this.enemies.splice(index, 1);
-            }        }
+            }}
    
         (<Laser> laser).kill();
         return true;

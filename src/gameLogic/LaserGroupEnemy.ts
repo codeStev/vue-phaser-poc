@@ -14,7 +14,7 @@ export default class LaserGroup extends Phaser.Physics.Arcade.Group
 
 	fireBullet(x : number, y : number,up: boolean, damage : number) {
 		let laser : LaserEnemy;
-		if(this.countActive()<=this.maxSize){
+		if(this.countActive()<=this.maxSize || this.maxSize==-1){
 			laser = this.create(x,y)!;
 		}
 		
