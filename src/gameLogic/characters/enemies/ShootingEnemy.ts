@@ -31,7 +31,7 @@ export default class ShootingEnemy extends Enemy{
     }
 
     calcTimerDelay(){
-        return (3000 * Math.random())
+        return (8000 * Math.random())
     }
     
 }

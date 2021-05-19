@@ -20,6 +20,8 @@ import LaserGroupEnemy from "@/gameLogic/LaserGroupEnemy";
 import CharacterKeys from "@/gameLogic/CharacterKeys";
 import TrojanHorse from "@/gameLogic/characters/enemies/TrojanHorse";
 import Gunner from "@/gameLogic/characters/enemies/Gunner";
+import Gang_A from "@/gameLogic/characters/enemies/Gang_A";
+import getRandomGangType from "@/gameLogic/utils/GangRandomizer";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: true,
@@ -32,6 +34,7 @@ export default class GameScene extends Scene{
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
     private player! : Player
     private enemies! : Enemy[] 
+    private gang! : Gang_A
    
     constructor(){
         super(sceneConfig)
@@ -45,26 +48,9 @@ export default class GameScene extends Scene{
         },100)
     }
   
-    public init(){
-        //create basic formation
-        const moveDown = this.moveDown      
-        let collideCounter = 0
-        this.physics.world.on("worldbounds",function(body: Phaser.Physics.Arcade.Body,blockedUp : boolean, blockedDown : boolean, blockedLeft : boolean, blockedRight : boolean){
-            if(blockedLeft ){
-                body.setVelocityX(500)
-                collideCounter ++
-            }
-            else if (blockedRight){
-                body.setVelocityX(-500)
-            }
-            if(collideCounter == 2){
-                body.setVelocityX(0)
-                body.setVelocityY(500)
-                moveDown(body,blockedLeft)
-                collideCounter = 0
-                }
-        })
-    }
+    // public init(){
+
+    // }
   
     public preload(){
         this.cursors = this.input.keyboard.createCursorKeys()
@@ -76,8 +62,8 @@ export default class GameScene extends Scene{
     }
     
     public create(){
-        const trojanHorse : TrojanHorse = new TrojanHorse(this)
-        this.enemies = trojanHorse.init()
+        this.gang = getRandomGangType(this)
+        this.enemies = this.gang.init()
         const enemyLaserGroup : LaserGroupEnemy = new LaserGroupEnemy(this)
         enemyLaserGroup.maxSize=-1
         const playerLaserGroup : LaserGroup = new LaserGroup(this)
@@ -115,6 +101,10 @@ export default class GameScene extends Scene{
                     undefined,
                     this
                 )
+            }
+            if(this.gang.getLength()==0){
+                this.gang = getRandomGangType(this)
+                this.enemies = this.gang.init()
             }
         
             if((<ShootingEnemy> element).lasers){

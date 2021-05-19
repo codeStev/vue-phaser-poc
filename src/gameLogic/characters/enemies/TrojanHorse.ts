@@ -11,7 +11,7 @@ export default class TrojanHorse extends Gang_A{
     
         const brutes : Enemy[] = <Enemy[]> this.createMultiple({
             classType: Brute,
-            frameQuantity : 6,
+            frameQuantity : 10,
             key : [this.bruteSpriteKey],
             visible: true,
             active : true      
@@ -21,14 +21,14 @@ export default class TrojanHorse extends Gang_A{
 
         const gunners : Enemy[] = <Enemy[]>this.createMultiple({
             classType: Gunner,
-            frameQuantity : 6,
+            frameQuantity : 10,
             key : [this.gunnerSpriteKey],
             visible: true,
             active : true,
         })
 
-        Phaser.Actions.SetXY(gunners, 300, 300, 100)
-        Phaser.Actions.SetXY(brutes, 300, 400, 100)
+        Phaser.Actions.SetXY(gunners, 300, 200, 100)
+        Phaser.Actions.SetXY(brutes, 300, 300, 100)
 
         enemies.push(...brutes)
         enemies.push(...gunners)
@@ -52,6 +52,7 @@ export default class TrojanHorse extends Gang_A{
         },100)
     }
   
+
     moveLeftRight(){
         //create basic formation
         const moveDown = this.moveDown      
