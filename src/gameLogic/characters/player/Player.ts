@@ -18,7 +18,7 @@ export default class Player extends Character{
 	body :  Phaser.Physics.Arcade.Body 
 	damage = 1
 	lifepoints = 3
-	laserGroup = new LaserGroup(this.scene,LaserKeys.BLUE)
+	laserGroup = new LaserGroup(this.scene)
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number)
 	{

@@ -16,6 +16,7 @@ import "@/gameLogic/characters/Character";
 import ShootingEnemy from "@/gameLogic/characters/enemies/ShootingEnemy";
 import LaserKeys from "@/gameLogic/LaserKeys";
 import LaserGroup from "@/gameLogic/LaserGroup";
+import LaserGroupEnemy from "@/gameLogic/LaserGroupEnemy";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: true,
@@ -73,9 +74,9 @@ export default class GameScene extends Scene{
     
     public create(){
     
-        const enemyLaserGroup : LaserGroup = new LaserGroup(this,LaserKeys.RED)
+        const enemyLaserGroup : LaserGroupEnemy = new LaserGroupEnemy(this)
         enemyLaserGroup.maxSize=2
-        const playerLaserGroup : LaserGroup = new LaserGroup(this,'blueLaser')
+        const playerLaserGroup : LaserGroup = new LaserGroup(this)
         this.cameras.main.setBackgroundColor("#000000");
         const startPosX : number = this.cameras.main.centerX
         const startPosY : number = this.cameras.main.centerY*1.8
@@ -114,9 +115,8 @@ export default class GameScene extends Scene{
                     undefined,
                     this
                 )
-         }
+            }
         
-       
             if((<ShootingEnemy> element).lasers){
                 (<ShootingEnemy>element).shoot()
                
@@ -129,6 +129,14 @@ export default class GameScene extends Scene{
                     this
                 )
             }
+
+            this.physics.overlap(
+                element,
+                this.player,
+                this._alienHitsPlayer,
+                undefined,
+                this
+            )
         })
       
     }
@@ -145,9 +153,23 @@ export default class GameScene extends Scene{
         (<Laser> laser).kill();
         return true;
     }
+
     private _laserHitsPlayer(player : Phaser.Types.Physics.Arcade.GameObjectWithBody, laser : Phaser.Types.Physics.Arcade.GameObjectWithBody){
         this.player.takeDamage(1);
         (<Laser> laser).kill();
         return true
+    }
+
+    private _alienHitsPlayer(enemy : Phaser.Types.Physics.Arcade.GameObjectWithBody, player : Phaser.Types.Physics.Arcade.GameObjectWithBody){
+        console.log(this.player.lifepoints)
+        this.player.takeDamage(1);
+        const enemyOriginal: Enemy = this.enemies.find(element => element.name == enemy.name)!;
+        if(enemyOriginal.lifepoints <= 0){
+            const index = this.enemies.indexOf(enemyOriginal);
+            if (index > -1) {
+              this.enemies.splice(index, 1);
+            }        }
+        enemyOriginal.takeDamage(this.player.damage);
+        console.log(this.player.lifepoints)
     }
 }
