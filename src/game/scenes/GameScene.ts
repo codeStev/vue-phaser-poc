@@ -28,12 +28,13 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 export default class GameScene extends Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private player!: Player;
-  private protection!: Protection;
+  private protections!: Protection[];
   private enemies!: Enemy[];
 
   constructor() {
     super(sceneConfig);
     this.enemies = [];
+    this.protections = [];
   }
 
   moveDown(body: Phaser.Physics.Arcade.Body, blockedLeft: boolean) {
@@ -75,26 +76,52 @@ export default class GameScene extends Scene {
     this.load.image("enemy1", BruteAsset);
     this.load.image("laser", LaserAsset);
     this.load.image("protection1", ProtectAsset1);
+    this.load.image("protection2", ProtectAsset2);
+    this.load.image("protection3", ProtectAsset3);
+    this.load.image("protection4", ProtectAsset4);
   }
 
+  // create Player, Protection and Enemies
   public create() {
+    // set background color of scene
     this.cameras.main.setBackgroundColor("#000000");
+
+    // variables for player startposition
     const startPosX: number = this.cameras.main.centerX;
     const startPosY: number = this.cameras.main.centerY * 1.8;
 
+    // add player to scene
     this.player = this.add.player(startPosX, startPosY, "ship");
     this.physics.world.enable([this.player]);
     this.player.body.setCollideWorldBounds(true);
 
-    this.protection = this.add.protection(
-      Math.random() *
-        (this.physics.world.bounds.right - this.physics.world.bounds.left) +
-        this.physics.world.bounds.left,
-      startPosY - 125,
-      "protection1"
-    );
-    this.physics.world.enable([this.protection]);
+    // List of Protection assets
+    const protectionAssets = [
+      "protection1",
+      "protection2",
+      "protection3",
+      "protection4",
+    ];
 
+    // calculate distance between Protection
+    const leftBound = this.physics.world.bounds.left;
+    const rightBound = this.physics.world.bounds.right;
+    const fullHorizontalLength = rightBound - leftBound;
+    const distanceBetweenProtections = fullHorizontalLength / 5;
+
+    // randomize AssetArray and add Protections to scene
+    protectionAssets.sort(() => Math.random() - 0.5);
+    for (let i = 0; i <= 3; i++) {
+      this.protections.push(
+        this.add.protection(
+          leftBound + distanceBetweenProtections * (i + 1),
+          startPosY - 150,
+          protectionAssets[i]
+        )
+      );
+    }
+
+    // add enemies to scene
     //this.brute = this.add.brute(startPosX, 300, 'enemy1')
     const enemyCount = 6;
     let x = 0;
