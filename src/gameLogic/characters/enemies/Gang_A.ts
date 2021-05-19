@@ -12,8 +12,4 @@ export default abstract class Gang_A extends Phaser.Physics.Arcade.Group{
     
     abstract init():void
     
-
-
-
-
 }
