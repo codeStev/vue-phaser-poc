@@ -17,7 +17,6 @@ import "@/gameLogic/protection/Protection";
 import Enemy from "@/gameLogic/characters/enemies/Enemy";
 import Character from "@/gameLogic/characters/Character";
 import "@/gameLogic/characters/enemies/Gunner";
-
 import "@/gameLogic/characters/Character";
 import ShootingEnemy from "@/gameLogic/characters/enemies/ShootingEnemy";
 import LaserKeys from "@/gameLogic/LaserKeys";
@@ -150,45 +149,69 @@ export default class GameScene extends Scene {
       this.player.update(this.cursors);
     }
 
-    // enemy hit by player event
+    // enemy hit by player
     this.enemies.forEach((element) => {
       if (this.player.laserGroup) {
         this.physics.overlap(
           this.player.laserGroup,
           element,
-          this._laserHitsAlien,
+          this._playerLaserShootsAlien,
           undefined,
           this
         );
       }
 
-      // player hit by enemy shot event
+      // player hit by enemy shot
       if ((<ShootingEnemy>element).lasers) {
         //(<ShootingEnemy>element).shoot()
         this.physics.overlap(
           (<ShootingEnemy>element).lasers,
           this.player,
-          this._laserHitsPlayer,
+          this._enemyLaserShootsPlayer,
           undefined,
           this
         );
       }
 
-      // player collides with enemy event
+      // player collides with enemy
       this.physics.overlap(
         element,
         this.player,
-        this._alienHitsPlayer,
+        this._enemyCollidesWithPlayer,
         undefined,
         this
       );
+
+      // enemy shoots protection
+      if ((<ShootingEnemy>element).lasers) {
+        this.protections.forEach((protection) => {
+          this.physics.overlap(
+            (<ShootingEnemy>element).lasers,
+            protection,
+            this._enemyLaserShootsProtection,
+            undefined,
+            this
+          );
+        });
+      }
     });
 
-    // TBA: protection hit event
+    // player shoots protection
+    this.protections.forEach((element) => {
+      if (this.player.laserGroup) {
+        this.physics.overlap(
+          this.player.laserGroup,
+          element,
+          this._playerLaserShootsProtection,
+          undefined,
+          this
+        );
+      }
+    });
   }
 
   // player Laser overlaps Alien
-  private _laserHitsAlien(
+  private _playerLaserShootsAlien(
     enemy: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     laser: Phaser.Types.Physics.Arcade.GameObjectWithBody
   ) {
@@ -211,8 +234,21 @@ export default class GameScene extends Scene {
     return true;
   }
 
+  //player Laser overlaps Protection
+  private _playerLaserShootsProtection(
+    protection: Phaser.Types.Physics.Arcade.GameObjectWithBody,
+    laser: Phaser.Types.Physics.Arcade.GameObjectWithBody
+  ) {
+    const protectionOriginal: Protection = this.protections.find(
+      (element) => element.name == protection.name
+    )!;
+    protectionOriginal.takeDamage(1);
+    (<Laser>laser).kill();
+    return true;
+  }
+
   // enemy Laser overlaps Player
-  private _laserHitsPlayer(
+  private _enemyLaserShootsPlayer(
     player: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     laser: Phaser.Types.Physics.Arcade.GameObjectWithBody
   ) {
@@ -221,8 +257,21 @@ export default class GameScene extends Scene {
     return true;
   }
 
+  // enemy Laser overlaps Protection
+  private _enemyLaserShootsProtection(
+    protection: Phaser.Types.Physics.Arcade.GameObjectWithBody,
+    laser: Phaser.Types.Physics.Arcade.GameObjectWithBody
+  ) {
+    const protectionOriginal: Protection = this.protections.find(
+      (element) => element.name == protection.name
+    )!;
+    protectionOriginal.takeDamage(1);
+    (<Laser>laser).kill();
+    return true;
+  }
+
   // enemy overlaps player
-  private _alienHitsPlayer(
+  private _enemyCollidesWithPlayer(
     enemy: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     player: Phaser.Types.Physics.Arcade.GameObjectWithBody
   ) {
