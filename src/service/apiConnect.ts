@@ -10,7 +10,7 @@ const apiClient = {
     return response.data;
   },
   async createScore(newScore: any) {
-    const response = await axios.post("/scores", newScore);
+    const response = await axios.put("/scores", newScore);
     return response.data;
   },
   async deleteScore(scoreId: string) {

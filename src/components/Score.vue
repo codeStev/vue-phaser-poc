@@ -1,19 +1,22 @@
 <template>
   <v-container>
     <h1>Score Management UI</h1>
-    <p>This UI developed to handle Score Registration.</p>
+    <p>This UI was developed to handle Score Registration.</p>
     <v-row>
       <v-col sm="12">
         <v-alert v-if="responseSuccess" dense text type="success">
           You have successfully added score.
         </v-alert>
+        <!-- <v-alert v-if="!responseSuccess" dense text type="failure">
+          Could not add score
+        </v-alert> -->
       </v-col>
       <v-col sm="6">
         <h3>Score Registration</h3>
         <v-text-field v-model="score.name" label="Player Name"></v-text-field>
         <v-text-field
           v-model="score.points"
-          label="Playe Points"
+          label="Player Points"
         ></v-text-field>
         <v-btn color="primary" v-on:click="createScore">
           Enter
@@ -53,6 +56,7 @@
 <script>
 import apiConnect from "@/service/apiConnect";
 import Vue from "vue";
+
 export default Vue.extend({
   name: "Score",
   data: () => ({
