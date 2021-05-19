@@ -1,3 +1,4 @@
+//constants for character textures
 const CharacterKeys = {
     PLAYER : "player",
     BRUTE : "enemy1",

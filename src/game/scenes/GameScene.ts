@@ -87,7 +87,6 @@ export default class GameScene extends Scene{
      }
     
     public update(){
-        
         if (this.player)
 		{
 			this.player.update(this.cursors)
@@ -103,14 +102,13 @@ export default class GameScene extends Scene{
                 )
             }
             if(this.gang.getLength()==0){
+                this.gang.reset()
                 this.gang = getRandomGangType(this)
                 this.enemies = this.gang.init()
             }
         
             if((<ShootingEnemy> element).lasers){
-                //(<ShootingEnemy>element).shoot()
                
-
                 this.physics.overlap(
                     (<ShootingEnemy> element).lasers,
                     this.player,
@@ -155,7 +153,6 @@ export default class GameScene extends Scene{
     }
 
     private _alienHitsPlayer(enemy : Phaser.Types.Physics.Arcade.GameObjectWithBody, player : Phaser.Types.Physics.Arcade.GameObjectWithBody){
-        console.log(this.player.lifepoints)
         this.player.takeDamage(1);
         const enemyOriginal: Enemy = this.enemies.find(element => element.name == enemy.name)!;
         if(enemyOriginal.lifepoints <= 0){
@@ -164,6 +161,5 @@ export default class GameScene extends Scene{
               this.enemies.splice(index, 1);
             }        }
         enemyOriginal.takeDamage(this.player.damage);
-        console.log(this.player.lifepoints)
     }
 }

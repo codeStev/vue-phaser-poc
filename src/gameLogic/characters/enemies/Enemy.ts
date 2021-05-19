@@ -7,7 +7,13 @@ export default class Enemy extends Character{
     hittingDamage  = 0
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number){
         super(scene,x,y,texture,frame)
+  
     }
 
-
+    preUpdate(time : number, delta : number){
+        super.preUpdate(time, delta);
+        if (this.y >= this.scene.physics.world.bounds.bottom) {
+            this.kill()
+        }
+    }
 }

@@ -1,3 +1,4 @@
+//constants for laser textures
 const LaserKeys = {
     RED : "redLaser",
     BLUE :"blueLaser"

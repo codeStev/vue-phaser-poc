@@ -5,8 +5,9 @@ import Gang_A from "./Gang_A";
 import Gunner from "./Gunner";
 
 export default class TrojanHorse extends Gang_A{
+    collideCounter = 0
 
-    init(): Enemy[] {
+    prepareChildren(): Enemy[] {
         const enemies : Enemy[] = [];
     
         const brutes : Enemy[] = <Enemy[]> this.createMultiple({
@@ -39,12 +40,15 @@ export default class TrojanHorse extends Gang_A{
             enemy.gang = this
         });
 
-        //Phaser.Actions.SetXY(this.getChildren(),300,300,100)
         this.setVelocityX(200);
-        this.moveLeftRight();
+        this.scene.physics.world.on('worldbounds',this.moveLeftRight)
         return enemies
     }
    
+    reset(){
+        this.scene.physics.world.removeListener('worldbounds')
+    }
+
     moveDown(gang : Gang_A, blockedLeft:boolean){
         setTimeout(function(){
             gang.setVelocityY(0)
@@ -52,28 +56,23 @@ export default class TrojanHorse extends Gang_A{
         },100)
     }
   
-
-    moveLeftRight(){
-        //create basic formation
-        const moveDown = this.moveDown      
-        let collideCounter = 0
-        
-        this.scene.physics.world.on("worldbounds",function(body : Phaser.Physics.Arcade.Body, blockedUp : boolean, blockedDown : boolean, blockedLeft : boolean, blockedRight : boolean){
-            const gang : Gang_A = (<Enemy>body.gameObject).gang
+    //callback for the worldbounds event in TrojanHorse. NOT called in this context, but in scene
+    moveLeftRight(body : Phaser.Physics.Arcade.Body, blockedUp : boolean, blockedDown : boolean, blockedLeft : boolean, blockedRight : boolean){        
+            const gang : TrojanHorse = <TrojanHorse>(<Enemy>body.gameObject).gang
             if(blockedLeft ){
                 gang.setVelocityX(200)
-                collideCounter ++
+                gang.collideCounter ++
             }
             else if (blockedRight){
                 gang.setVelocityX(-200)
             }
-            if(collideCounter == 2){
-                (<Enemy>body.gameObject).gang.setVelocityX(0)
-                gang.setVelocityY(300)
-                moveDown(gang,blockedLeft)
-                collideCounter = 0
+            if(gang.collideCounter == 2){
+                gang.setVelocityX(0);
+                gang.setVelocityY(300);
+                (<TrojanHorse>gang).moveDown(gang,blockedLeft);
+                gang.collideCounter = 0;
                 }
-        })
+       
     }
        
    
