@@ -22,6 +22,11 @@ import ShootingEnemy from "@/gameLogic/characters/enemies/ShootingEnemy";
 import LaserKeys from "@/gameLogic/LaserKeys";
 import LaserGroup from "@/gameLogic/LaserGroup";
 import LaserGroupEnemy from "@/gameLogic/LaserGroupEnemy";
+import CharacterKeys from "@/gameLogic/CharacterKeys";
+import TrojanHorse from "@/gameLogic/characters/enemies/TrojanHorse";
+import Gunner from "@/gameLogic/characters/enemies/Gunner";
+import Gang_A from "@/gameLogic/characters/enemies/Gang_A";
+import getRandomGangType from "@/gameLogic/utils/GangRandomizer";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: true,
@@ -34,6 +39,7 @@ export default class GameScene extends Scene {
   private player!: Player;
   private enemies!: Enemy[];
   private protections!: Protection[];
+  private gang!: Gang_A;
 
   constructor() {
     super(sceneConfig);
@@ -48,39 +54,13 @@ export default class GameScene extends Scene {
     }, 100);
   }
 
-  public init() {
-    //create basic formation
-    const moveDown = this.moveDown;
-    let collideCounter = 0;
-    this.physics.world.on("worldbounds", function(
-      body: Phaser.Physics.Arcade.Body,
-      blockedUp: boolean,
-      blockedDown: boolean,
-      blockedLeft: boolean,
-      blockedRight: boolean
-    ) {
-      if (blockedLeft) {
-        body.setVelocityX(500);
-        collideCounter++;
-      } else if (blockedRight) {
-        body.setVelocityX(-500);
-      }
-      if (collideCounter == 2) {
-        body.setVelocityX(0);
-        body.setVelocityY(500);
-        moveDown(body, blockedLeft);
-        collideCounter = 0;
-      }
-    });
-  }
-
   public preload() {
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.load.image("ship", ShipAsset);
-    this.load.image("enemy1", BruteAsset);
-    this.load.image("enemy2", GunnerAsset);
-    this.load.image("redLaser", RedLaserAsset);
-    this.load.image("blueLaser", BlueLaserAsset);
+    this.load.image(CharacterKeys.PLAYER, ShipAsset);
+    this.load.image(CharacterKeys.BRUTE, BruteAsset);
+    this.load.image(CharacterKeys.GUNNER, GunnerAsset);
+    this.load.image(LaserKeys.RED, RedLaserAsset);
+    this.load.image(LaserKeys.BLUE, BlueLaserAsset);
     this.load.image("protection1", ProtectAsset1);
     this.load.image("protection2", ProtectAsset2);
     this.load.image("protection3", ProtectAsset3);
@@ -89,6 +69,8 @@ export default class GameScene extends Scene {
 
   // create Player, Protection and Enemies
   public create() {
+    this.gang = getRandomGangType(this);
+    this.enemies = this.gang.init();
     const enemyLaserGroup: LaserGroupEnemy = new LaserGroupEnemy(this);
     enemyLaserGroup.maxSize = -1;
     const playerLaserGroup: LaserGroup = new LaserGroup(this);
@@ -99,7 +81,7 @@ export default class GameScene extends Scene {
     const startPosY: number = this.cameras.main.centerY * 1.8;
 
     // add player to scene + initialize player laser group
-    this.player = this.add.player(startPosX, startPosY, "ship");
+    this.player = this.add.player(startPosX, startPosY, CharacterKeys.PLAYER);
     this.player.laserGroup = playerLaserGroup;
     this.physics.world.enable([this.player]);
     this.player.body.setCollideWorldBounds(true);
@@ -130,18 +112,11 @@ export default class GameScene extends Scene {
       );
     }
 
-    // add enemies to scene
-    const enemyCount = 6;
-    let x = 0;
-    const xOffset = 100;
-    for (let i = 0; i < 6; i++) {
-      x = x + xOffset;
-      this.enemies.push(this.add.brute(x, 300, "enemy1"));
-
-      const gunner = this.add.gunner(x, 600, "enemy2");
-      gunner.lasers = enemyLaserGroup;
-      this.enemies.push(gunner);
-    }
+    this.enemies.forEach((enemy) => {
+      if ((<ShootingEnemy>enemy).lasers) {
+        (<ShootingEnemy>enemy).lasers = enemyLaserGroup;
+      }
+    });
   }
 
   public update() {
@@ -161,9 +136,14 @@ export default class GameScene extends Scene {
         );
       }
 
+      if (this.gang.getLength() == 0) {
+        this.gang.reset();
+        this.gang = getRandomGangType(this);
+        this.enemies = this.gang.init();
+      }
+
       // player hit by enemy shot
       if ((<ShootingEnemy>element).lasers) {
-        //(<ShootingEnemy>element).shoot()
         this.physics.overlap(
           (<ShootingEnemy>element).lasers,
           this.player,
@@ -275,7 +255,6 @@ export default class GameScene extends Scene {
     enemy: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     player: Phaser.Types.Physics.Arcade.GameObjectWithBody
   ) {
-    console.log(this.player.lifepoints);
     this.player.takeDamage(1);
     const enemyOriginal: Enemy = this.enemies.find(
       (element) => element.name == enemy.name
@@ -287,6 +266,5 @@ export default class GameScene extends Scene {
       }
     }
     enemyOriginal.takeDamage(this.player.damage);
-    console.log(this.player.lifepoints);
   }
 }
