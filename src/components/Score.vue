@@ -4,6 +4,7 @@
     <p>This UI was developed to handle Score Registration.</p>
     <v-row>
       <v-col sm="12">
+        <!-- response message -->
         <v-alert v-if="responseSuccess" dense text type="success">
           You have successfully added score.
         </v-alert>
@@ -24,6 +25,7 @@
       </v-col>
       <v-col sm="6">
         <h3>Entered Scores</h3>
+        <!-- table with all read scores -->
         <v-simple-table>
           <template v-slot:default>
             <thead>
@@ -68,14 +70,17 @@ export default Vue.extend({
     responseSuccess: false,
   }),
   methods: {
+    // use api to read scores
     readAllScores: async function() {
       const data = await apiConnect.readAllScores();
       this.enteredScores = data;
     },
+    // use api to read top ten scores
     readTopTenScores: async function() {
       const data = await apiConnect.readTopTenScores;
       this.enteredScores = data;
     },
+    // use api to save new score
     createScore: async function() {
       const requestData = {
         name: this.score.name,
@@ -88,6 +93,7 @@ export default Vue.extend({
       this.responseSuccess = true;
     },
   },
+  // default method when starting up
   mounted() {
     this.readAllScores();
   },
