@@ -22,7 +22,9 @@ export default class Player extends Character {
   body: Phaser.Physics.Arcade.Body;
   damage = 1;
   lifepoints = 3;
+  score = 0;
   playerLifes: Phaser.GameObjects.Sprite[] = [];
+  scoreText: Phaser.GameObjects.Text;
   laserGroup = new LaserGroup(this.scene);
 
   constructor(
@@ -45,7 +47,6 @@ export default class Player extends Character {
     const leftDown = cursors.left?.isDown;
     const rightDown = cursors.right?.isDown;
     const spaceDown = cursors.space?.isDown;
-
     if (leftDown) {
       this.body.setVelocityX(-speed);
     } else if (rightDown) {
@@ -56,29 +57,31 @@ export default class Player extends Character {
     if (spaceDown) {
       this.laserGroup.fireBullet(this.x, this.y - 20, true, this.damage);
     }
+
+	//score text update
+	this.setScoreText()
   }
 
-  takeDamage(damage: number) {
+  takeDamage(damage: number) : boolean{
     this.lifepoints -= damage;
     this.loseLifePoint(damage);
     if (this.lifepoints <= 0) {
-
-		this.scene.scene.pause()
-    //   this.kill();
+		//this.scene.scene.pause()
+		return true;
     }
-    return;
+    return false;
   }
 
-  //creates lifePoint images
+  //shows lifePoints in the bottom left
   createLifePoints() {
     for (let i = 0; i < this.lifepoints; i++) {
       this.playerLifes.push(
-        this.scene.add.sprite(50 * (i + 1), 1150, CharacterKeys.PLAYERLIFE)
+        this.scene.add.sprite(this.scene.cameras.main.centerX * 0.055 * (i + 1), this.scene.cameras.main.centerY * 1.94, CharacterKeys.PLAYERLIFE)
       );
     }
   }
 
-  //destroys lifePoint image
+  //makes lost lifePoints opaque
   loseLifePoint(damage: number) {
     for (let i = 0; i < damage; i++) {
       if (this.playerLifes.length != 0) {
@@ -86,6 +89,29 @@ export default class Player extends Character {
         life.setAlpha(0.5);
       }
     }
+  }
+
+  //adds score text to scene  
+  addScoreText(){
+    const posX = this.scene.cameras.main.centerX * 0.045
+    const posY = this.scene.cameras.main.centerY * 1.86
+    this.scoreText = this.scene.add.text(posX, posY,'',{font: '30px Courier',color: '#f0e130'})
+
+  }
+
+  //set score text in scene
+  setScoreText(){
+    this.scoreText.setText(this.score.toString());
+} 
+
+  //add score to player
+  addScore(points : number){
+	this.score += points
+  }
+
+  //subtracts points from score
+  loseScore(points : number){
+	this.score -= points
   }
 }
 
@@ -108,5 +134,6 @@ Phaser.GameObjects.GameObjectFactory.register("player", function(
     Phaser.Physics.Arcade.DYNAMIC_BODY
   );
   player.createLifePoints();
+  player.addScoreText();
   return player;
 });

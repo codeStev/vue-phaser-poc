@@ -16,6 +16,7 @@ export default class Gunner extends ShootingEnemy{
         this.lifepoints = 1
 		this.hittingDamage = 1
         this.shootingDamage = 1
+		this.points = 20
     }
 
     

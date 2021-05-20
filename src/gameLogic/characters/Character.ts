@@ -8,12 +8,13 @@ export default class Character extends Phaser.Physics.Arcade.Sprite{
     body :  Phaser.Physics.Arcade.Body;
     lifepoints : number;
 
-    public takeDamage(damage :number){
+    public takeDamage(damage :number) : boolean{
         this.lifepoints -= damage
         if(this.lifepoints <= 0){
             this.kill();
+            return true;
         }
-        return
+        return false;
     }
 
     kill(){

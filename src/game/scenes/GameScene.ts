@@ -43,7 +43,7 @@ export default class GameScene extends Scene {
   private enemies!: Enemy[];
   private protections!: Protection[];
   private gang!: Gang_A;
-
+  private eventDispatcher! : Phaser.Events.EventEmitter
   constructor() {
     super(sceneConfig);
     this.enemies = [];
@@ -74,6 +74,7 @@ export default class GameScene extends Scene {
 
   // create Player, Protection and Enemies
   public create() {
+    this.eventDispatcher = new Phaser.Events.EventEmitter()
     this.gang = getRandomGangType(this);
     this.enemies = this.gang.init();
     const enemyLaserGroup: LaserGroupEnemy = new LaserGroupEnemy(this);
@@ -91,7 +92,7 @@ export default class GameScene extends Scene {
     this.physics.world.enable([this.player]);
     this.player.body.setCollideWorldBounds(true);
     //add listener for stopOverlay
-    this.events.on('pause', this._showGamePauseOverlay)
+    this.events.on('finalScene', this._showGamePauseOverlay)
     // List of Protection assets
     const protectionAssets = [
       ProtectionKeys.METEOR1,
@@ -211,12 +212,13 @@ export default class GameScene extends Scene {
     const enemyOriginal: Enemy = this.enemies.find(
       (element) => element.name == enemy.name
     )!;
-    enemyOriginal.takeDamage(this.player.damage);
+    const isKilled = enemyOriginal.takeDamage(this.player.damage);
 
     if ((<ShootingEnemy>enemyOriginal).shootingTimerEvent!) {
       (<ShootingEnemy>enemyOriginal).shootingTimerEvent.remove(false);
     }
-    if (enemyOriginal.lifepoints <= 0) {
+    if (isKilled) {
+      this.player.addScore(enemyOriginal.points)
       const index = this.enemies.indexOf(enemyOriginal);
       if (index > -1) {
         this.enemies.splice(index, 1);
@@ -246,7 +248,10 @@ export default class GameScene extends Scene {
     player: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     laser: Phaser.Types.Physics.Arcade.GameObjectWithBody
   ) {
-    this.player.takeDamage(1);
+    const isKilled = this.player.takeDamage(1);
+    if(isKilled == true){
+      this._triggerFinalScreenEvent()
+    }
     (<Laser>laser).kill();
     return true;
   }
@@ -270,7 +275,10 @@ export default class GameScene extends Scene {
     enemy: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     player: Phaser.Types.Physics.Arcade.GameObjectWithBody
   ) {
-    this.player.takeDamage(1);
+    const isKilled = this.player.takeDamage((<Enemy> enemy).hittingDamage);
+    if(isKilled){
+      this._triggerFinalScreenEvent()
+    }
     const enemyOriginal: Enemy = this.enemies.find(
       (element) => element.name == enemy.name
     )!;
@@ -305,16 +313,24 @@ export default class GameScene extends Scene {
     enemyOriginal.takeDamage(1);
     return true;
   }
-  private _showGamePauseOverlay(scene : Scene){
+  
+  private _triggerFinalScreenEvent(){
+    this.events.emit('finalScene',this)
+  }
+  
+  private _showGamePauseOverlay(scene : GameScene){
+    scene.scene.pause()
     const centerX = scene.cameras.main.centerX;
     const centerY = scene.cameras.main.centerY;
     const height = scene.cameras.main.centerY*2
     const width = scene.cameras.main.centerX*2
     const gamePauseOverlay = scene.add.rectangle(centerX, centerY, width, height, 0o0)
     gamePauseOverlay.fillAlpha = 0.8
-    gamePauseOverlay.setVisible(true)
     const gamePauseOverlayText = scene.add.image(centerX,centerY/1.5,'gameOverOverlay')
     gamePauseOverlayText.setScale(width/gamePauseOverlayText.width/2.8,height/gamePauseOverlayText.height/2.5)
+    const scoreText = scene.player.score.toString()
+    const finalScoreText =  scene.add.text(centerX, centerY * 1.1 ,'Score:',{font: '70px Courier',color: '#f0e130'}).setOrigin(0.5)
+    const finalScorePoints =  scene.add.text(centerX, centerY * 1.2 , scoreText ,{font: '70px Courier',color: '#f0e130'}).setOrigin(0.5)
     
   }
 }

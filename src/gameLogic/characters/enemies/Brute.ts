@@ -14,16 +14,13 @@ declare global
 	}
 }
 
-
 export default class Brute extends Enemy{
 
-    constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number)
-	{
+    constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number){
 		super(scene, x, y, texture, frame)
 		this.lifepoints = 1
 		this.hittingDamage = 1
-		
-
+		this.points = 10
 	}
 
     preUpdate(){
@@ -33,7 +30,7 @@ export default class Brute extends Enemy{
     update(){
 		this.scene.physics.world.enableBody(this, Phaser.Physics.Arcade.DYNAMIC_BODY)
 		this.body.setCollideWorldBounds(true)
-		this.body.onWorldBounds = true	
+		this.body.onWorldBounds = true
 		this.body.setImmovable(false)
 		this.body.setVelocityX(500)
 	}
