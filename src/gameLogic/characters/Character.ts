@@ -17,6 +17,8 @@ export default class Character extends Phaser.Physics.Arcade.Sprite{
     }
 
     kill(){
+        this.setActive(false)
+        this.setVisible(false)
         this.destroy();
     }
 

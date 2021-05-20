@@ -5,7 +5,7 @@ export default class Laser extends Phaser.Physics.Arcade.Sprite{
     damage : number
 
     constructor(scene : Phaser.Scene, x : number, y : number, damage : number){
-        super(scene, x, y, LaserKeys.RED)
+        super(scene, x, y, LaserKeys.BLUE)
         this.setName(uuidv4())
         this.damage = damage
     }
@@ -15,12 +15,12 @@ export default class Laser extends Phaser.Physics.Arcade.Sprite{
         this.y = y
         this.setActive(true);
         this.setVisible(true);
-        console.log(this.scene.physics.world.bounds.bottom)
         up ? this.setVelocityY(-1000) : this.setVelocityY(1000)
     }
 
     preUpdate(time : number, delta : number){
         super.preUpdate(time, delta);
+
         if (this.y <= 0 || this.y >= this.scene.physics.world.bounds.bottom) {
             this.kill()
         }

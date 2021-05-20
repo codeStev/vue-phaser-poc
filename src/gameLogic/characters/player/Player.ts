@@ -1,4 +1,5 @@
 import LaserGroup from '@/gameLogic/LaserGroup'
+import LaserKeys from '@/gameLogic/LaserKeys'
 import Phaser from 'phaser'
 import Character from '../Character'
 //add player method to Phaser interface GameObjectFactory
@@ -53,7 +54,7 @@ export default class Player extends Character{
 		}
 		if (spaceDown)
 		{
-			this.laserGroup.fireBullet(this.x, this.y -20)
+			this.laserGroup.fireBullet(this.x, this.y -20, true,this.damage)
 		}
 	}
 }

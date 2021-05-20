@@ -19,7 +19,7 @@ export default class Game extends VuexModule {
        physics : {
            default: 'arcade',
            arcade : {
-               debug : true, 
+               debug : false , 
                checkCollision: {
                        up: true,
                        down: true,
