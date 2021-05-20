@@ -1,5 +1,6 @@
 import { GameObjects, Scene } from "phaser";
 import ShipAsset from "../gameAssets/player/playerShip3_red.png";
+import PlayerLifeAsset from '../gameAssets/player/playerLife3_red.png';
 import BruteAsset from "../gameAssets/enemies/enemyGreen4.png";
 import GunnerAsset from "../gameAssets/enemies/enemyBlue1.png";
 import RedLaserAsset from "../gameAssets/effects/particle-effects/laserRed01.png";
@@ -57,6 +58,7 @@ export default class GameScene extends Scene {
   public preload() {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.load.image(CharacterKeys.PLAYER, ShipAsset);
+    this.load.image(CharacterKeys.PLAYERLIFE, PlayerLifeAsset)
     this.load.image(CharacterKeys.BRUTE, BruteAsset);
     this.load.image(CharacterKeys.GUNNER, GunnerAsset);
     this.load.image(LaserKeys.RED, RedLaserAsset);

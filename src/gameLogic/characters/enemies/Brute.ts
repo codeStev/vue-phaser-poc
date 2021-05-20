@@ -1,6 +1,7 @@
 
 import Phaser, { Game, Time } from 'phaser'
 import Enemy from './Enemy'
+import Gang_A from './Gang_A'
 
 declare global
 {
@@ -21,7 +22,9 @@ export default class Brute extends Enemy{
 		super(scene, x, y, texture, frame)
 		this.lifepoints = 1
 		this.hittingDamage = 1
-      }
+		
+
+	}
 
     preUpdate(){
         return
