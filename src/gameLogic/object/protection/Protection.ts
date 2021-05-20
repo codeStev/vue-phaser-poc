@@ -1,6 +1,6 @@
 import Phaser from "phaser";
-import Character from "../characters/Character";
-import { v4 as uuidv4 } from 'uuid';
+import Character from "@/gameLogic/characters/Character";
+import { v4 as uuidv4 } from "uuid";
 
 declare global {
   namespace Phaser.GameObjects {
@@ -17,7 +17,8 @@ declare global {
 
 export default class Protection extends Character {
   body: Phaser.Physics.Arcade.Body;
-  lifepoints = 2;
+  maxHealth = 5;
+  lifepoints = this.maxHealth;
 
   constructor(
     scene: Phaser.Scene,
@@ -42,6 +43,10 @@ export default class Protection extends Character {
     return;
   }
 
+  // calculate object opacity
+  public calcOpacity() {
+    return this.lifepoints / this.maxHealth;
+  }
 }
 
 //register added method protection on GameObjectFactory implementation

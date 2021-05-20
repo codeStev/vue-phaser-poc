@@ -12,18 +12,19 @@ import ProtectAsset4 from "../gameAssets/meteors/meteorBrown_big4.png";
 import Player from "@/gameLogic/characters/player/Player";
 import "@/gameLogic/characters/player/Player";
 import "@/gameLogic/characters/enemies/Brute";
-import Laser from "@/gameLogic/Laser";
-import Protection from "@/gameLogic/protection/Protection";
-import "@/gameLogic/protection/Protection";
+import Laser from "@/gameLogic/object/laser/Laser";
+import Protection from "@/gameLogic/object/protection/Protection";
+import "@/gameLogic/object/protection/Protection";
 import Enemy from "@/gameLogic/characters/enemies/Enemy";
 import Character from "@/gameLogic/characters/Character";
 import "@/gameLogic/characters/enemies/Gunner";
 import "@/gameLogic/characters/Character";
 import ShootingEnemy from "@/gameLogic/characters/enemies/ShootingEnemy";
-import LaserKeys from "@/gameLogic/LaserKeys";
-import LaserGroup from "@/gameLogic/LaserGroup";
-import LaserGroupEnemy from "@/gameLogic/LaserGroupEnemy";
-import CharacterKeys from "@/gameLogic/CharacterKeys";
+import LaserKeys from "@/gameLogic/textureKeys/LaserKeys";
+import LaserGroup from "@/gameLogic/object/laser/LaserGroup";
+import LaserGroupEnemy from "@/gameLogic/object/laser/LaserGroupEnemy";
+import CharacterKeys from "@/gameLogic/textureKeys/CharacterKeys";
+import ProtectionKeys from "@/gameLogic/textureKeys/ProtectionKeys";
 import TrojanHorse from "@/gameLogic/characters/enemies/TrojanHorse";
 import Gunner from "@/gameLogic/characters/enemies/Gunner";
 import Gang_A from "@/gameLogic/characters/enemies/Gang_A";
@@ -63,10 +64,10 @@ export default class GameScene extends Scene {
     this.load.image(CharacterKeys.GUNNER, GunnerAsset);
     this.load.image(LaserKeys.RED, RedLaserAsset);
     this.load.image(LaserKeys.BLUE, BlueLaserAsset);
-    this.load.image("protection1", ProtectAsset1);
-    this.load.image("protection2", ProtectAsset2);
-    this.load.image("protection3", ProtectAsset3);
-    this.load.image("protection4", ProtectAsset4);
+    this.load.image(ProtectionKeys.METEOR1, ProtectAsset1);
+    this.load.image(ProtectionKeys.METEOR2, ProtectAsset2);
+    this.load.image(ProtectionKeys.METEOR3, ProtectAsset3);
+    this.load.image(ProtectionKeys.METEOR4, ProtectAsset4);
   }
 
   // create Player, Protection and Enemies
@@ -90,10 +91,10 @@ export default class GameScene extends Scene {
 
     // List of Protection assets
     const protectionAssets = [
-      "protection1",
-      "protection2",
-      "protection3",
-      "protection4",
+      ProtectionKeys.METEOR1,
+      ProtectionKeys.METEOR2,
+      ProtectionKeys.METEOR3,
+      ProtectionKeys.METEOR4,
     ];
 
     // calculate distance between Protection
@@ -189,6 +190,13 @@ export default class GameScene extends Scene {
           this
         );
       }
+      this.physics.overlap(
+        element,
+        this.enemies,
+        this._enemyCollidesWithProtection,
+        undefined,
+        this
+      );
     });
   }
 
@@ -225,6 +233,7 @@ export default class GameScene extends Scene {
       (element) => element.name == protection.name
     )!;
     protectionOriginal.takeDamage(1);
+    protectionOriginal.alpha = protectionOriginal.calcOpacity();
     (<Laser>laser).kill();
     return true;
   }
@@ -248,6 +257,7 @@ export default class GameScene extends Scene {
       (element) => element.name == protection.name
     )!;
     protectionOriginal.takeDamage(1);
+    protectionOriginal.alpha = protectionOriginal.calcOpacity();
     (<Laser>laser).kill();
     return true;
   }
@@ -268,5 +278,28 @@ export default class GameScene extends Scene {
       }
     }
     enemyOriginal.takeDamage(this.player.damage);
+  }
+
+  // enemy overlaps protection
+  private _enemyCollidesWithProtection(
+    protection: Phaser.Types.Physics.Arcade.GameObjectWithBody,
+    enemy: Phaser.Types.Physics.Arcade.GameObjectWithBody
+  ) {
+    const protectionOriginal: Protection = this.protections.find(
+      (element) => element.name == protection.name
+    )!;
+    protectionOriginal.takeDamage(1);
+    protectionOriginal.alpha = protectionOriginal.calcOpacity();
+    const enemyOriginal: Enemy = this.enemies.find(
+      (element) => element.name == enemy.name
+    )!;
+    if (enemyOriginal.lifepoints <= 0) {
+      const index = this.enemies.indexOf(enemyOriginal);
+      if (index > -1) {
+        this.enemies.splice(index, 1);
+      }
+    }
+    enemyOriginal.takeDamage(1);
+    return true;
   }
 }
