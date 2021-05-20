@@ -62,6 +62,7 @@ export default class Player extends Character{
 Phaser.GameObjects.GameObjectFactory.register('player', function (this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, texture: string, frame?: string | number) {
 	//create player object
 	const player = new Player(this.scene, x, y, texture, frame)
+	//add player object to the display and update list of the scene
 	this.displayList.add(player)
 	this.updateList.add(player)
 	//enable physics on player (for world bounds)

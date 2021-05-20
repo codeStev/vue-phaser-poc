@@ -14,10 +14,11 @@ export default class ShootingEnemy extends Enemy{
         this.lasers = new LaserGroupEnemy(scene)
         this.timerDelay = this.calcTimerDelay()
     }   
+    //add the specific timerevent for the enemy to the scene
     addedToScene(){
-        console.log('added to scene')
         this.shootingTimerEvent = this.scene.time.addEvent({delay: this.timerDelay, callback: this.shoot, callbackScope: this, loop: true })
     }
+    //recalculate a new delay
     preUpdate(){
         this.timerDelay = this.calcTimerDelay()
     }
@@ -29,9 +30,9 @@ export default class ShootingEnemy extends Enemy{
         this.shootingTimerEvent = this.scene.time.addEvent({delay: this.timerDelay, callback: this.shoot, callbackScope: this, loop: true })
 
     }
-
+    //calculate shooting delay
     calcTimerDelay(){
-        return (3000 * Math.random())
+        return (8000 * Math.random())
     }
     
 }
