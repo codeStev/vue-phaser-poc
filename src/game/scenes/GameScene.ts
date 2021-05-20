@@ -30,6 +30,7 @@ import Gunner from "@/gameLogic/characters/enemies/Gunner";
 import Gang_A from "@/gameLogic/characters/enemies/Gang_A";
 import getRandomGangType from "@/gameLogic/utils/GangRandomizer";
 import GameOverOverlay from '@/game/gameAssets/overlay/gameOverPicture.png'
+import store from "@/store";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: true,
@@ -317,8 +318,13 @@ export default class GameScene extends Scene {
   private _triggerFinalScreenEvent(){
     this.events.emit('finalScene',this)
   }
+
+  getPlayer() : Player{
+    return this.player;
+  }
   
   private _showGamePauseOverlay(scene : GameScene){
+    store.dispatch('setScoreWithNumber',scene.player.score)
     scene.scene.pause()
     const centerX = scene.cameras.main.centerX;
     const centerY = scene.cameras.main.centerY;

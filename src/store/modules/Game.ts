@@ -1,6 +1,8 @@
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import Phaser, { Scene } from 'phaser'
 import GameScene from '@/game/scenes/GameScene'
+import Player from '@/gameLogic/characters/player/Player'
+import { mapGetters } from 'vuex'
 //Game module for vuex store
 @Module
 export default class Game extends VuexModule {
@@ -37,6 +39,7 @@ export default class Game extends VuexModule {
    }
     game = new Phaser.Game(this.gameConfig)
     
+    
     @Mutation
     addScene(key : string,scene: Scene) : void {
       this.game.scene.add(key,scene)
@@ -56,4 +59,30 @@ export default class Game extends VuexModule {
     deleteSceneByKey(key : string) :void {
        this.context.commit('deleteScene',key)
     }
+    @Mutation
+    setGameWidth(key : number) : void {
+      this.game.scale.setGameSize(key,this.game.scale.height)
+    }
+    @Action
+    setGameWidthWithNumber(key : number) : void {
+      this.context.commit('setGameWidth',key)
+    }
+
+    get gameWidth(){
+      return this.game.scale.width
+    }
+     get gameHeight(){
+      return this.game.scale.height
+    }
+
+    get playerScore() : number{
+      const player : Player = (<GameScene>this.game.scene.getScene('Game'))?.getPlayer();
+      if(player!){
+        console.log(player) 
+        return player.score
+      }
+      return 0 
+    }
+
+  
   }
