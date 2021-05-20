@@ -62,7 +62,9 @@ export default class Player extends Character {
     this.lifepoints -= damage;
     this.loseLifePoint(damage);
     if (this.lifepoints <= 0) {
-      this.kill();
+
+		this.scene.scene.pause()
+    //   this.kill();
     }
     return;
   }

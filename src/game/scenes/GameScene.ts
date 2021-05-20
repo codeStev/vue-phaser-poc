@@ -29,6 +29,7 @@ import TrojanHorse from "@/gameLogic/characters/enemies/TrojanHorse";
 import Gunner from "@/gameLogic/characters/enemies/Gunner";
 import Gang_A from "@/gameLogic/characters/enemies/Gang_A";
 import getRandomGangType from "@/gameLogic/utils/GangRandomizer";
+import GameOverOverlay from '@/game/gameAssets/overlay/gameOverPicture.png'
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: true,
@@ -68,6 +69,7 @@ export default class GameScene extends Scene {
     this.load.image(ProtectionKeys.METEOR2, ProtectAsset2);
     this.load.image(ProtectionKeys.METEOR3, ProtectAsset3);
     this.load.image(ProtectionKeys.METEOR4, ProtectAsset4);
+    this.load.image('gameOverOverlay',GameOverOverlay)
   }
 
   // create Player, Protection and Enemies
@@ -88,7 +90,8 @@ export default class GameScene extends Scene {
     this.player.laserGroup = playerLaserGroup;
     this.physics.world.enable([this.player]);
     this.player.body.setCollideWorldBounds(true);
-
+    //add listener for stopOverlay
+    this.events.on('pause', this._showGamePauseOverlay)
     // List of Protection assets
     const protectionAssets = [
       ProtectionKeys.METEOR1,
@@ -301,5 +304,17 @@ export default class GameScene extends Scene {
     }
     enemyOriginal.takeDamage(1);
     return true;
+  }
+  private _showGamePauseOverlay(scene : Scene){
+    const centerX = scene.cameras.main.centerX;
+    const centerY = scene.cameras.main.centerY;
+    const height = scene.cameras.main.centerY*2
+    const width = scene.cameras.main.centerX*2
+    const gamePauseOverlay = scene.add.rectangle(centerX, centerY, width, height, 0o0)
+    gamePauseOverlay.fillAlpha = 0.8
+    gamePauseOverlay.setVisible(true)
+    const gamePauseOverlayText = scene.add.image(centerX,centerY/1.5,'gameOverOverlay')
+    gamePauseOverlayText.setScale(width/gamePauseOverlayText.width/2.8,height/gamePauseOverlayText.height/2.5)
+    
   }
 }
