@@ -1,3 +1,4 @@
+import CharacterKeys from '@/gameLogic/CharacterKeys'
 import LaserGroup from '@/gameLogic/LaserGroup'
 import LaserKeys from '@/gameLogic/LaserKeys'
 import Phaser from 'phaser'
@@ -18,6 +19,7 @@ export default class Player extends Character{
 	body :  Phaser.Physics.Arcade.Body 
 	damage = 1
 	lifepoints = 3
+	playerLifes : Phaser.GameObjects.Sprite[] = []
 	laserGroup = new LaserGroup(this.scene)
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number)
@@ -57,6 +59,33 @@ export default class Player extends Character{
 			this.laserGroup.fireBullet(this.x, this.y -20, true,this.damage)
 		}
 	}
+
+	takeDamage(damage :number){
+        this.lifepoints -= damage
+		this.loseLifePoint(damage)
+        if(this.lifepoints <= 0){
+            this.kill();
+			
+        }
+        return
+    }
+
+	//creates lifePoint images
+	createLifePoints(){
+		for (let i = 0; i < this.lifepoints; i++) {
+			this.playerLifes.push(this.scene.add.sprite((50 * (i + 1)), 1150, CharacterKeys.PLAYERLIFE))
+		}
+	}
+
+	//destroys lifePoint image
+	loseLifePoint(damage : number){
+		for(let i = 0; i<damage;i++){
+			if(this.playerLifes.length!=0){
+				const life = <Phaser.GameObjects.Sprite> this.playerLifes.pop()
+				life.setAlpha(0.5)
+			}
+		}
+	}
 }
 //register added method player on GameObjectFactory implementation
 Phaser.GameObjects.GameObjectFactory.register('player', function (this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, texture: string, frame?: string | number) {
@@ -67,5 +96,6 @@ Phaser.GameObjects.GameObjectFactory.register('player', function (this: Phaser.G
 	this.updateList.add(player)
 	//enable physics on player (for world bounds)
 	this.scene.physics.world.enableBody(player, Phaser.Physics.Arcade.DYNAMIC_BODY)
+	player.createLifePoints();
 	return player
 })
