@@ -1,4 +1,4 @@
-import CharacterKeys from "@/gameLogic/CharacterKeys";
+import CharacterKeys from "@/gameLogic/textureKeys/CharacterKeys";
 import LaserGroup from "@/gameLogic/object/laser/LaserGroup";
 import LaserKeys from "@/gameLogic/textureKeys/LaserKeys";
 import Phaser from "phaser";
