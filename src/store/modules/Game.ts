@@ -75,14 +75,7 @@ export default class Game extends VuexModule {
       return this.game.scale.height
     }
 
-    get playerScore() : number{
-      const player : Player = (<GameScene>this.game.scene.getScene('Game'))?.getPlayer();
-      if(player!){
-        console.log(player) 
-        return player.score
-      }
-      return 0 
-    }
+ 
 
   
   }

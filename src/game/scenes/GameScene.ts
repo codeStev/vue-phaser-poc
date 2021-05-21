@@ -75,6 +75,7 @@ export default class GameScene extends Scene {
 
   // create Player, Protection and Enemies
   public create() {
+    
     this.eventDispatcher = new Phaser.Events.EventEmitter()
     this.gang = getRandomGangType(this);
     this.enemies = this.gang.init();
@@ -324,6 +325,9 @@ export default class GameScene extends Scene {
   }
   
   private _showGamePauseOverlay(scene : GameScene){
+    
+    store.dispatch('setSceneWidthAction',scene.game.scale.width)
+    store.dispatch('setSceneHeightAction',scene.game.scale.height)
     store.dispatch('setScoreWithNumber',scene.player.score)
     scene.scene.pause()
     const centerX = scene.cameras.main.centerX;
@@ -337,6 +341,6 @@ export default class GameScene extends Scene {
     const scoreText = scene.player.score.toString()
     const finalScoreText =  scene.add.text(centerX, centerY * 1.1 ,'Score:',{font: '70px Courier',color: '#f0e130'}).setOrigin(0.5)
     const finalScorePoints =  scene.add.text(centerX, centerY * 1.2 , scoreText ,{font: '70px Courier',color: '#f0e130'}).setOrigin(0.5)
-    
+    store.dispatch('toggleGameOverAction')
   }
 }

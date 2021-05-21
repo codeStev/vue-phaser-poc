@@ -5,24 +5,24 @@ import Player from '@/gameLogic/characters/player/Player'
 import { mapGetters } from 'vuex'
 //Score module for vuex store
 @Module
-export default class Score extends VuexModule {
+export default class GameOver extends VuexModule {
   //default Game Config
- score = 0 
+ gameOver = false 
 
    
  @Mutation
- setScore(score : number) : void {
-   this.score = score
+ toggleGameOver() : void {
+   this.gameOver = !this.gameOver
  }
 
  //adds scene to game config
  @Action
- setScoreWithNumber(score : number) : void {
-     this.context.commit('setScore',score)
+ toggleGameOverAction(score : number) : void {
+     this.context.commit('toggleGameOver')
  }
 
- get Score(){
-     return this.score
+ get GameOver(){
+     return this.gameOver
  }
   
   }

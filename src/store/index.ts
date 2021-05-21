@@ -3,13 +3,17 @@ import Vuex, { Module } from 'vuex'
 
 import game from './modules/Game'
 import score from './modules/Score'
+import gameOver from './modules/GameOver'
+import sceneInformation from './modules/SceneInformation'
+
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {},
   modules: {
     game,
-    score
+    score,
+    gameOver,sceneInformation
 
     
   }
