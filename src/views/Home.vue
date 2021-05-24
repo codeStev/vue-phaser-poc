@@ -7,9 +7,10 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import GameComponent from '@/components/GameComponent.vue'; // @ is an alias to /src
+
 @Component({
   components: {
-    GameComponent  },
+    GameComponent},
 })
 export default class Home extends Vue {}
 </script>

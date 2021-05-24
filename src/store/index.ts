@@ -5,6 +5,7 @@ import game from './modules/Game'
 import score from './modules/Score'
 import gameOver from './modules/GameOver'
 import sceneInformation from './modules/SceneInformation'
+import phaserEventDispatcher from './modules/PhaserEventDispatcher'
 
 Vue.use(Vuex)
 
@@ -13,7 +14,9 @@ const store = new Vuex.Store({
   modules: {
     game,
     score,
-    gameOver,sceneInformation
+    gameOver,
+    sceneInformation,
+    phaserEventDispatcher
 
     
   }

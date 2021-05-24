@@ -7,37 +7,19 @@ import { mapGetters } from 'vuex'
 @Module
 export default class SceneInformation extends VuexModule {
   //default Game Config
- sceneWidth = 0
- sceneHeight = 0 
+scene : GameScene
 
-   
- @Mutation
- setSceneWidth(width : number) : void {
-   this.sceneWidth = width
- }
 
- //adds scene to game config
- @Action
- setSceneWidthAction(width : number) : void {
-     this.context.commit('setSceneWidth',width)
- }
 
  @Mutation
- setSceneHeight(height : number) : void {
-   this.sceneHeight = height
+ setScene(scene : GameScene): void{
+     this.scene = scene
  }
-
- //adds scene to game config
  @Action
- setSceneHeightAction(height : number) : void {
-     this.context.commit('setSceneWidth',height)
+ setSceneAction(scene:GameScene):void{
+     this.context.commit('setScene',scene)
  }
-
- get SceneWidth(){
-     return this.sceneWidth
+ get Scene(){
+   return this.scene
  }
-  
- get SceneHeight(){
-    return this.sceneHeight
 }
-  }

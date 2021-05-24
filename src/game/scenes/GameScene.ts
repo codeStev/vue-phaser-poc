@@ -31,6 +31,7 @@ import Gang_A from "@/gameLogic/characters/enemies/Gang_A";
 import getRandomGangType from "@/gameLogic/utils/GangRandomizer";
 import GameOverOverlay from '@/game/gameAssets/overlay/gameOverPicture.png'
 import store from "@/store";
+import EventDispatcher from "@/gameLogic/eventManagement/EventDispatcher";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: true,
@@ -75,8 +76,9 @@ export default class GameScene extends Scene {
 
   // create Player, Protection and Enemies
   public create() {
-    
-    this.eventDispatcher = new Phaser.Events.EventEmitter()
+    this.setSceneGlobally()
+    this.eventDispatcher = EventDispatcher.getInstance()
+    this.eventDispatcher.on('restartScene',this._restartScene)
     this.gang = getRandomGangType(this);
     this.enemies = this.gang.init();
     const enemyLaserGroup: LaserGroupEnemy = new LaserGroupEnemy(this);
@@ -94,7 +96,7 @@ export default class GameScene extends Scene {
     this.physics.world.enable([this.player]);
     this.player.body.setCollideWorldBounds(true);
     //add listener for stopOverlay
-    this.events.on('finalScene', this._showGamePauseOverlay)
+    this.eventDispatcher.on('finalScene', this._showGamePauseOverlay)
     // List of Protection assets
     const protectionAssets = [
       ProtectionKeys.METEOR1,
@@ -317,18 +319,15 @@ export default class GameScene extends Scene {
   }
   
   private _triggerFinalScreenEvent(){
-    this.events.emit('finalScene',this)
+    this.eventDispatcher.emit('finalScene',this)
   }
 
   getPlayer() : Player{
     return this.player;
   }
   
-  private _showGamePauseOverlay(scene : GameScene){
-    
-    store.dispatch('setSceneWidthAction',scene.game.scale.width)
-    store.dispatch('setSceneHeightAction',scene.game.scale.height)
-    store.dispatch('setScoreWithNumber',scene.player.score)
+  private async _showGamePauseOverlay(scene : GameScene){
+    await store.dispatch('setScoreWithNumber',scene.player.score)
     scene.scene.pause()
     const centerX = scene.cameras.main.centerX;
     const centerY = scene.cameras.main.centerY;
@@ -341,6 +340,15 @@ export default class GameScene extends Scene {
     const scoreText = scene.player.score.toString()
     const finalScoreText =  scene.add.text(centerX, centerY * 1.1 ,'Score:',{font: '70px Courier',color: '#f0e130'}).setOrigin(0.5)
     const finalScorePoints =  scene.add.text(centerX, centerY * 1.2 , scoreText ,{font: '70px Courier',color: '#f0e130'}).setOrigin(0.5)
-    store.dispatch('toggleGameOverAction')
+    await store.dispatch('toggleGameOverAction')
+    console.log('Ich war hier!')
+  }
+
+  private _restartScene(scene: GameScene){
+    scene.scene.restart()
+  }
+
+  private async setSceneGlobally(){
+    await store.dispatch('setSceneAction',this)
   }
 }

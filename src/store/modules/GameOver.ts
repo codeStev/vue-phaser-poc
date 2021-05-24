@@ -12,12 +12,17 @@ export default class GameOver extends VuexModule {
    
  @Mutation
  toggleGameOver() : void {
-   this.gameOver = !this.gameOver
+   if(this.gameOver){
+     this.gameOver = false
+   }
+   else if(!this.gameOver){
+     this.gameOver = true
+   }
  }
 
  //adds scene to game config
  @Action
- toggleGameOverAction(score : number) : void {
+ toggleGameOverAction() : void {
      this.context.commit('toggleGameOver')
  }
 
