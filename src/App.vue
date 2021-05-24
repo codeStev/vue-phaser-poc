@@ -12,8 +12,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import EventDispatcher from './gameLogic/eventManagement/EventDispatcher';
-import PhaserEventDispatcher from './store/modules/PhaserEventDispatcher';
 
 export default Vue.extend({
   name: 'App',

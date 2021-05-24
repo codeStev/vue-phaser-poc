@@ -78,7 +78,11 @@ export default class GameScene extends Scene {
   public create() {
     this.setSceneGlobally()
     this.eventDispatcher = EventDispatcher.getInstance()
+    this.eventDispatcher.removeAllListeners('restartScene')
+    this.eventDispatcher.removeAllListeners('finalScene')
     this.eventDispatcher.on('restartScene',this._restartScene)
+    //add listener for stopOverlay
+    this.eventDispatcher.on('finalScene', this._showGamePauseOverlay)
     this.gang = getRandomGangType(this);
     this.enemies = this.gang.init();
     const enemyLaserGroup: LaserGroupEnemy = new LaserGroupEnemy(this);
@@ -95,8 +99,6 @@ export default class GameScene extends Scene {
     this.player.laserGroup = playerLaserGroup;
     this.physics.world.enable([this.player]);
     this.player.body.setCollideWorldBounds(true);
-    //add listener for stopOverlay
-    this.eventDispatcher.on('finalScene', this._showGamePauseOverlay)
     // List of Protection assets
     const protectionAssets = [
       ProtectionKeys.METEOR1,
@@ -340,7 +342,7 @@ export default class GameScene extends Scene {
     const scoreText = scene.player.score.toString()
     const finalScoreText =  scene.add.text(centerX, centerY * 1.1 ,'Score:',{font: '70px Courier',color: '#f0e130'}).setOrigin(0.5)
     const finalScorePoints =  scene.add.text(centerX, centerY * 1.2 , scoreText ,{font: '70px Courier',color: '#f0e130'}).setOrigin(0.5)
-    await store.dispatch('toggleGameOverAction')
+    await store.dispatch('toggleGameOverAction','gamescene')
     console.log('Ich war hier!')
   }
 

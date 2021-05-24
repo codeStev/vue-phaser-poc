@@ -36,7 +36,7 @@ export default Vue.extend({
     }),
     methods : {
         restartGame: async function(){
-            await this.$store.dispatch('toggleGameOverAction')
+            await this.$store.dispatch('toggleGameOverAction','gameComponent')
             let scene = await this.$store.getters.Scene
             console.log('scene',scene)
            await this.phaserEventDispatcher.emit('restartScene',scene)
@@ -48,7 +48,8 @@ export default Vue.extend({
 
     },
     mounted(){
-        this.phaserEventDispatcher.on('restartGame', this.restartGame.bind(this));
+        //this.phaserEventDispatcher.removeListeners('restartGame');
+        this.phaserEventDispatcher.on('restartGame', this.restartGame);
     }
     
 })

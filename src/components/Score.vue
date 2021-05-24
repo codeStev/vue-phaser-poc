@@ -14,12 +14,12 @@
             Submit
           </v-btn >
         </v-col>
-      </v-row>>
+      </v-row>
       <v-row>
         <v-btn v-on:click="restartGame">
           Retry
         </v-btn>
-        </v-row>  
+      </v-row>  
     </v-col >  
     <v-col cols="6"  justify-center align-center>
       <v-data-table>
@@ -72,8 +72,8 @@ export default Vue.extend({
   },
   data: () => ({
     scoreData: {
-      name: 'peter',
-      points: 2000
+      name: '',
+      points: 0
     },
     enteredScores: [],
     responseSuccess: false,

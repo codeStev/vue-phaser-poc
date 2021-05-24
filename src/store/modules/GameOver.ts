@@ -11,19 +11,19 @@ export default class GameOver extends VuexModule {
 
    
  @Mutation
- toggleGameOver() : void {
-   if(this.gameOver){
-     this.gameOver = false
+ toggleGameOver(toggler : string) : void {
+    this.gameOver = !this.gameOver
+    console.log('toggler', toggler)
+    console.log('gameOver ',this.gameOver)
+
    }
-   else if(!this.gameOver){
-     this.gameOver = true
-   }
- }
+
+ 
 
  //adds scene to game config
  @Action
- toggleGameOverAction() : void {
-     this.context.commit('toggleGameOver')
+ toggleGameOverAction(toggler : string) : void {
+     this.context.commit('toggleGameOver',toggler)
  }
 
  get GameOver(){
