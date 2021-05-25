@@ -1,16 +1,17 @@
 <template>
  
-  <v-card flat tile id="scoreMenu"  color="transparent" :max-width="(this.canvasWidth)" :max-height="this.canvasHeight" elevation="0"> 
+  <v-card flat tile id="scoreMenu"  color="transparent" :max-width="componentSize.width" :max-height="componentSize.height" elevation="0"> 
   <v-row d-flex justify-center align-center>
     <v-col cols="6"  justify-center align-center>
       <v-row>
         <v-col cols="6" justify-center align-center>
-          <v-text-field dense v-model="scoreData.name" label="Name" color="yellow" background-color="white">
-            
+          <v-form v-model="isFormValid">
+          <v-text-field :rules="[rules.required, rules.counter]" maxlength="5" dense v-model="scoreData.name" label="Name" color="yellow" background-color="white">
           </v-text-field>
+          </v-form>
         </v-col >
          <v-col cols="2" justify-center align-center>
-          <v-btn dense v-on:click="createScore">
+          <v-btn id="submitButton" dense v-on:click="createScore" :disabled="!isFormValid" >
             Submit
           </v-btn >
         </v-col>
@@ -28,7 +29,6 @@
   </v-row>
   </v-card>
 </template>
-
 <script>
 import EventDispatcher from "@/gameLogic/eventManagement/EventDispatcher";
 import apiConnect from "@/service/apiConnect";
@@ -42,34 +42,24 @@ export default Vue.extend({
           return this.score 
         }
         return 0
-      }
-      // or any other constructor
-    ,
-      splitName : function(){
-
-        let newScoreData=""
-        if( this.scoreData.name.length!=undefined && this.scoreData.name.length>5){
-          newScoreData = this.scoreData.name
-          newScoreData = this.scoreData.slice(0,5);
+      },
+      componentSize: function(){
+        const componentSize = {
+          height : 0,
+          width : 0
         }
-        return newScoreData
+        const gameCanvas = document.getElementById('game').firstElementChild
+        if(gameCanvas != undefined){
+        const canvasStyle = getComputedStyle(gameCanvas)
+        const canvasHeight = (parseInt(canvasStyle.height)/3)+'px'
+        const canvasWidth =(parseInt(canvasStyle.width)*0.7)+'px'
+        componentSize.height = canvasHeight
+        componentSize.width = canvasWidth
+        }
+
+        return componentSize
       }
-      // or any other constructor
     },
-     watch: {
-    // whenever question changes, this function will run
-    getScore: function (newScore, oldScore) {
-      console.log('newscore'+ toString(newScore))
-      if(newScore!= undefined){
-              this.scoreData.points = newScore
-      }
-    },
-    splitName: function (newName) {
-      if(newName != undefined){
-              this.scoreData.name = newName
-      }
-    }
-  },
   data: () => ({
     scoreData: {
       name: '',
@@ -77,9 +67,16 @@ export default Vue.extend({
     },
     enteredScores: [],
     responseSuccess: false,
-    canvasWidth : '',
-    canvasHeight : '',
-    phaserEventDispatcher : EventDispatcher.getInstance()
+    phaserEventDispatcher : EventDispatcher.getInstance(),
+    isFormValid :false,
+       rules: {
+          required: value => !!value || 'Required.',
+          counter: value => value.length <= 5 || 'Max 5 characters',
+          email: value => {
+            const pattern = /w{5}/
+            return pattern.test(value) || 'invalid user name'
+          }
+       }
   })
   ,    
   props: {
@@ -97,19 +94,20 @@ export default Vue.extend({
     },
     // use api to read top ten scores
     readTopTenScores: async function () {
-      const data = await apiConnect.readTopTenScores;
+      const data = apiConnect.readTopTenScores;
       this.enteredScores = data;
     },
     // use api to save new score
     createScore: async function () {
-      const requestData = {
-        name: this.score.name,
-        points: this.score.points,
-      };
-      await apiConnect.createScore(requestData);
+      // const requestData = {
+      //   name: this.score.name,
+      //   points: this.score.points,
+      // };
+      await apiConnect.createScore(this.scoreData);
       this.score.name = "";
       this.score.points = 0;
-      this.readAllScores();
+      this.submitButtonDisabled = true
+      await this.readAllScores();
       this.responseSuccess = true;
     },
     async restartGame(){
@@ -125,11 +123,22 @@ export default Vue.extend({
     this.canvasWidth =(parseInt(canvasStyle.width)*0.7)+'px'
     this.canvasHeight = (parseInt(canvasStyle.height)/3)+'px'
   },
+  created(){
+    this.scoreData.points = this.getScore
+      // Trick to remove class after initialising form
+    this.$nextTick(() => {
+        document.getElementById('submitButton').classList.remove('v-btn--disabled')      
+    })
+  }
 });
 </script>
 
 <style scoped>
 #scoreMenu{ 
     transform: translateY(-100%) !important;
+}
+button.v-btn[disabled] {
+  opacity: 0.1 !important;
+  
 }
 </style>

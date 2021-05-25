@@ -8,8 +8,7 @@
     </v-row>
 </v-container>
 </template>
-
-// <script>
+ <script>
 import { Game } from 'phaser'
 import Vue from 'vue'
 import Score from './Score.vue'
