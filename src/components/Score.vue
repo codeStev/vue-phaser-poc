@@ -11,7 +11,7 @@
           </v-form>
         </v-col >
          <v-col cols="2" justify-center align-center>
-          <v-btn id="submitButton" dense v-on:click="createScore" :disabled="!isFormValid" >
+          <v-btn id="submitButton" dense v-on:click="createScore" :disabled="buttonDisabled" >
             Submit
           </v-btn >
         </v-col>
@@ -23,8 +23,32 @@
       </v-row>  
     </v-col >  
     <v-col cols="6"  justify-center align-center>
-      <v-data-table>
-      </v-data-table>
+      <v-simple-table  dense :height="componentSize.height" class="overflow-y-auto">
+        <template>
+        <thead>
+        <tr>
+          <th class="text-left">
+            #
+          </th>
+          <th class="text-left">
+            Player
+          </th>
+          <th class="text-left">
+            Score
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr
+          v-for="(score,index) in enteredScores"
+          :key="score.id">
+          <td>{{index+1}}</td>
+          <td>{{score.name}}</td>
+          <td>{{score.points}}</td>
+          </tr>
+        </tbody>
+        </template>
+      </v-simple-table>
     </v-col>
   </v-row>
   </v-card>
@@ -42,6 +66,9 @@ export default Vue.extend({
           return this.score 
         }
         return 0
+      },
+      buttonDisabled : function(){
+        return (!this.isFormValid || this.responseSuccess)
       },
       componentSize: function(){
         const componentSize = {
@@ -80,34 +107,19 @@ export default Vue.extend({
   })
   ,    
   props: {
-      sceneHeight: Number,
-      sceneWidth: Number,
       score: Number,
-      // or any other constructor
     },
   methods: {
-    // use api to read scores
-    readAllScores: async function () {
-
-      const data = await apiConnect.readAllScores();
-      this.enteredScores = data;
-    },
     // use api to read top ten scores
     readTopTenScores: async function () {
-      const data = apiConnect.readTopTenScores;
+      const data = await apiConnect.readTopTenScores();
       this.enteredScores = data;
     },
     // use api to save new score
     createScore: async function () {
-      // const requestData = {
-      //   name: this.score.name,
-      //   points: this.score.points,
-      // };
       await apiConnect.createScore(this.scoreData);
-      this.score.name = "";
-      this.score.points = 0;
-      this.submitButtonDisabled = true
-      await this.readAllScores();
+      this.isFormValid = false
+      await this.readTopTenScores();
       this.responseSuccess = true;
     },
     async restartGame(){
@@ -124,6 +136,7 @@ export default Vue.extend({
     this.canvasHeight = (parseInt(canvasStyle.height)/3)+'px'
   },
   created(){
+    this.readTopTenScores()
     this.scoreData.points = this.getScore
       // Trick to remove class after initialising form
     this.$nextTick(() => {

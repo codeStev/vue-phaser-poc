@@ -1,8 +1,6 @@
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import Phaser, { Scene } from 'phaser'
 import GameScene from '@/game/scenes/GameScene'
-import Player from '@/gameLogic/characters/player/Player'
-import { mapGetters } from 'vuex'
 //Game module for vuex store
 @Module
 export default class Game extends VuexModule {
@@ -16,7 +14,6 @@ export default class Game extends VuexModule {
         width : 1600,
         height : 1200,
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
-        
       },
        physics : {
            default: 'arcade',
