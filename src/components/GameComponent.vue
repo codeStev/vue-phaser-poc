@@ -17,11 +17,13 @@ export default Vue.extend({
   components: { Score },
     name : 'GameComponent',
     computed:{
+        //returns the score held in store, updates accordingly when the state changes
         playerScore: function(){
             const score = this.$store.getters.Score
             console.log(score)
             return score
         },
+        //eturns the gamover state held in store, updates accordingly when the state changes
         gameOver : function(){
             const gameOver = this.$store.getters.GameOver
             console.log(gameOver)
@@ -35,19 +37,22 @@ export default Vue.extend({
     }),
     methods : {
         restartGame: async function(){
+            //dispatch store action to toggle gameOver in store
             await this.$store.dispatch('toggleGameOverAction','gameComponent')
             let scene = await this.$store.getters.Scene
             console.log('scene',scene)
+            //emit restartScene event with scene as callback parameter
            await this.phaserEventDispatcher.emit('restartScene',scene)
 
             }
     },
     beforeMount(){
+        //get the game from store
         this.game = this.$store.getters.game;
 
     },
     mounted(){
-        //this.phaserEventDispatcher.removeListeners('restartGame');
+        //add eventlistener for restartGame event
         this.phaserEventDispatcher.on('restartGame', this.restartGame);
     }
     

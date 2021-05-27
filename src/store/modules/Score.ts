@@ -15,7 +15,7 @@ export default class Score extends VuexModule {
    this.score = score
  }
 
- //adds scene to game config
+ 
  @Action
  setScoreWithNumber(score : number) : void {
      this.context.commit('setScore',score)

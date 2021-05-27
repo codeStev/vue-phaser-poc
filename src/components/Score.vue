@@ -81,8 +81,10 @@ export default Vue.extend({
           height : 0,
           width : 0
         }
+        //get the game canvas html element by id
         const gameCanvas = document.getElementById('game').firstElementChild
         if(gameCanvas != undefined){
+        //get the style of the element and calculate the new canvas dimensions
         const canvasStyle = getComputedStyle(gameCanvas)
         const canvasHeight = (parseInt(canvasStyle.height)/3)+'px'
         const canvasWidth =(parseInt(canvasStyle.width)*0.7)+'px'
@@ -127,7 +129,7 @@ export default Vue.extend({
     createScore: async function () {
       const scoreResponse = await apiConnect.createScore(this.scoreData)
       console.log(scoreResponse)
-
+      //check for the responsecode
       if (scoreResponse.status >= 200 && scoreResponse.status <300){
         this.responseSuccess = true
         this.errorMessage = ""

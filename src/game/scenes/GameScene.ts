@@ -1,37 +1,34 @@
-import { GameObjects, Scene } from "phaser";
-import ShipAsset from "../gameAssets/player/playerShip3_red.png";
-import PlayerLifeAsset from "../gameAssets/player/playerLife3_red.png";
-import BruteAsset from "../gameAssets/enemies/enemyGreen4.png";
-import GunnerAsset from "../gameAssets/enemies/enemyBlue1.png";
-import RedLaserAsset from "../gameAssets/effects/particle-effects/laserRed01.png";
+import GameOverOverlay from '@/game/gameAssets/overlay/gameOverPicture.png';
+import "@/gameLogic/characters/Character";
+import "@/gameLogic/characters/enemies/Brute";
+import Enemy from "@/gameLogic/characters/enemies/Enemy";
+import Gang_A from "@/gameLogic/characters/enemies/Gang_A";
+import "@/gameLogic/characters/enemies/Gunner";
+import ShootingEnemy from "@/gameLogic/characters/enemies/ShootingEnemy";
+import "@/gameLogic/characters/player/Player";
+import Player from "@/gameLogic/characters/player/Player";
+import EventDispatcher from "@/gameLogic/eventManagement/EventDispatcher";
+import Laser from "@/gameLogic/object/laser/Laser";
+import LaserGroup from "@/gameLogic/object/laser/LaserGroup";
+import LaserGroupEnemy from "@/gameLogic/object/laser/LaserGroupEnemy";
+import "@/gameLogic/object/protection/Protection";
+import Protection from "@/gameLogic/object/protection/Protection";
+import CharacterKeys from "@/gameLogic/textureKeys/CharacterKeys";
+import LaserKeys from "@/gameLogic/textureKeys/LaserKeys";
+import ProtectionKeys from "@/gameLogic/textureKeys/ProtectionKeys";
+import getRandomGangType from "@/gameLogic/utils/GangRandomizer";
+import store from "@/store";
+import { Scene } from "phaser";
 import BlueLaserAsset from "../gameAssets/effects/particle-effects/laserBlue02.png";
+import RedLaserAsset from "../gameAssets/effects/particle-effects/laserRed01.png";
+import GunnerAsset from "../gameAssets/enemies/enemyBlue1.png";
+import BruteAsset from "../gameAssets/enemies/enemyGreen4.png";
 import ProtectAsset1 from "../gameAssets/meteors/meteorBrown_big1.png";
 import ProtectAsset2 from "../gameAssets/meteors/meteorBrown_big2.png";
 import ProtectAsset3 from "../gameAssets/meteors/meteorBrown_big3.png";
 import ProtectAsset4 from "../gameAssets/meteors/meteorBrown_big4.png";
-import Player from "@/gameLogic/characters/player/Player";
-import "@/gameLogic/characters/player/Player";
-import "@/gameLogic/characters/enemies/Brute";
-import Laser from "@/gameLogic/object/laser/Laser";
-import Protection from "@/gameLogic/object/protection/Protection";
-import "@/gameLogic/object/protection/Protection";
-import Enemy from "@/gameLogic/characters/enemies/Enemy";
-import Character from "@/gameLogic/characters/Character";
-import "@/gameLogic/characters/enemies/Gunner";
-import "@/gameLogic/characters/Character";
-import ShootingEnemy from "@/gameLogic/characters/enemies/ShootingEnemy";
-import LaserKeys from "@/gameLogic/textureKeys/LaserKeys";
-import LaserGroup from "@/gameLogic/object/laser/LaserGroup";
-import LaserGroupEnemy from "@/gameLogic/object/laser/LaserGroupEnemy";
-import CharacterKeys from "@/gameLogic/textureKeys/CharacterKeys";
-import ProtectionKeys from "@/gameLogic/textureKeys/ProtectionKeys";
-import TrojanHorse from "@/gameLogic/characters/enemies/TrojanHorse";
-import Gunner from "@/gameLogic/characters/enemies/Gunner";
-import Gang_A from "@/gameLogic/characters/enemies/Gang_A";
-import getRandomGangType from "@/gameLogic/utils/GangRandomizer";
-import GameOverOverlay from '@/game/gameAssets/overlay/gameOverPicture.png'
-import store from "@/store";
-import EventDispatcher from "@/gameLogic/eventManagement/EventDispatcher";
+import PlayerLifeAsset from "../gameAssets/player/playerLife3_red.png";
+import ShipAsset from "../gameAssets/player/playerShip3_red.png";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: true,
@@ -60,6 +57,7 @@ export default class GameScene extends Scene {
   }
 
   public preload() {
+    //load assets
     this.cursors = this.input.keyboard.createCursorKeys();
     this.load.image(CharacterKeys.PLAYER, ShipAsset);
     this.load.image(CharacterKeys.PLAYERLIFE, PlayerLifeAsset);
@@ -76,16 +74,23 @@ export default class GameScene extends Scene {
 
   // create Player, Protection and Enemies
   public create() {
+    //set scene state in store to make it globally available
     this.setSceneGlobally()
+    //get eventDispatcher instance
     this.eventDispatcher = EventDispatcher.getInstance()
+    //remove all previous listeners if existent else they are added multiple times
     this.eventDispatcher.removeAllListeners('restartScene')
     this.eventDispatcher.removeAllListeners('finalScene')
+    //set event listener for restart scene event
     this.eventDispatcher.on('restartScene',this._restartScene)
-    //add listener for stopOverlay
+    //add event listener for stopOverlay
     this.eventDispatcher.on('finalScene', this._showGamePauseOverlay)
+    //choose random gang type to render
     this.gang = getRandomGangType(this);
     this.enemies = this.gang.init();
+    //create new Laser group for enemy lasers
     const enemyLaserGroup: LaserGroupEnemy = new LaserGroupEnemy(this);
+    //set maximum number of enemy lasers on screen to infinite
     enemyLaserGroup.maxSize = -1;
     const playerLaserGroup: LaserGroup = new LaserGroup(this);
     // set background color of scene
@@ -94,7 +99,7 @@ export default class GameScene extends Scene {
     const startPosX: number = this.cameras.main.centerX;
     const startPosY: number = this.cameras.main.centerY * 1.8;
 
-    // add player to scene + initialize player laser group
+    // add player to scene and initialize player laser group
     this.player = this.add.player(startPosX, startPosY, CharacterKeys.PLAYER);
     this.player.laserGroup = playerLaserGroup;
     this.physics.world.enable([this.player]);
@@ -124,7 +129,7 @@ export default class GameScene extends Scene {
         )
       );
     }
-
+    //bin each enemy to the enemyLaserGroup
     this.enemies.forEach((enemy) => {
       if ((<ShootingEnemy>enemy).lasers) {
         (<ShootingEnemy>enemy).lasers = enemyLaserGroup;
@@ -137,7 +142,7 @@ export default class GameScene extends Scene {
       this.player.update(this.cursors);
     }
 
-    // enemy hit by player
+    // add handler for enemies hitting the player
     this.enemies.forEach((element) => {
       if (this.player.laserGroup) {
         this.physics.overlap(
@@ -155,7 +160,7 @@ export default class GameScene extends Scene {
         this.enemies = this.gang.init();
       }
 
-      // player hit by enemy shot
+      // add handler for enemy lasers hitting the player
       if ((<ShootingEnemy>element).lasers) {
         this.physics.overlap(
           (<ShootingEnemy>element).lasers,
@@ -166,7 +171,7 @@ export default class GameScene extends Scene {
         );
       }
 
-      // player collides with enemy
+      // add handler for player colliding with enemies
       this.physics.overlap(
         element,
         this.player,
@@ -175,7 +180,7 @@ export default class GameScene extends Scene {
         this
       );
 
-      // enemy shoots protection
+      // add handler for enemy lasers hitting protections
       if ((<ShootingEnemy>element).lasers) {
         this.protections.forEach((protection) => {
           this.physics.overlap(
@@ -189,7 +194,7 @@ export default class GameScene extends Scene {
       }
     });
 
-    // player shoots protection
+    // add handler for player lasers hitting the protections
     this.protections.forEach((element) => {
       if (this.player.laserGroup) {
         this.physics.overlap(
@@ -210,7 +215,7 @@ export default class GameScene extends Scene {
     });
   }
 
-  // player Laser overlaps Alien
+  // add handler for player lasers hitting the enemies
   private _playerLaserShootsAlien(
     enemy: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     laser: Phaser.Types.Physics.Arcade.GameObjectWithBody
@@ -235,7 +240,7 @@ export default class GameScene extends Scene {
     return true;
   }
 
-  //player Laser overlaps Protection
+  //add handler for player lasers hitting the protections
   private _playerLaserShootsProtection(
     protection: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     laser: Phaser.Types.Physics.Arcade.GameObjectWithBody
@@ -249,7 +254,7 @@ export default class GameScene extends Scene {
     return true;
   }
 
-  // enemy Laser overlaps Player
+  // add handler for enemy laser hitting the player
   private _enemyLaserShootsPlayer(
     player: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     laser: Phaser.Types.Physics.Arcade.GameObjectWithBody
@@ -276,7 +281,7 @@ export default class GameScene extends Scene {
     return true;
   }
 
-  // enemy overlaps player
+  // add handler for enemy hitting the player
   private _enemyCollidesWithPlayer(
     enemy: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     player: Phaser.Types.Physics.Arcade.GameObjectWithBody
@@ -297,7 +302,7 @@ export default class GameScene extends Scene {
     enemyOriginal.takeDamage(this.player.damage);
   }
 
-  // enemy overlaps protection
+  // add handler for enemy hitting the protections
   private _enemyCollidesWithProtection(
     protection: Phaser.Types.Physics.Arcade.GameObjectWithBody,
     enemy: Phaser.Types.Physics.Arcade.GameObjectWithBody
@@ -329,7 +334,9 @@ export default class GameScene extends Scene {
   }
   
   private async _showGamePauseOverlay(scene : GameScene){
+    //save current score in store
     await store.dispatch('setScoreWithNumber',scene.player.score)
+    //pause scene and create overlay
     scene.scene.pause()
     const centerX = scene.cameras.main.centerX;
     const centerY = scene.cameras.main.centerY;
@@ -342,6 +349,7 @@ export default class GameScene extends Scene {
     const scoreText = scene.player.score.toString()
     const finalScoreText =  scene.add.text(centerX, centerY * 1.1 ,'Score:',{font: '70px Courier',color: '#f0e130'}).setOrigin(0.5)
     const finalScorePoints =  scene.add.text(centerX, centerY * 1.2 , scoreText ,{font: '70px Courier',color: '#f0e130'}).setOrigin(0.5)
+    //toggle game over globally in store
     await store.dispatch('toggleGameOverAction','gamescene')
     console.log('Ich war hier!')
   }

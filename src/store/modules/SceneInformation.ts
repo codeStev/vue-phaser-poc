@@ -6,7 +6,6 @@ import { mapGetters } from 'vuex'
 //Score module for vuex store
 @Module
 export default class SceneInformation extends VuexModule {
-  //default Game Config
 scene : GameScene
 
 
