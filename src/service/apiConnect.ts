@@ -13,9 +13,16 @@ const apiClient = {
   },
   // sends new score to db
   async createScore(newScore: any) {
-    const response = await axios.put("/scores", newScore);
-    return response.data;
-  },
+ 
+     try {
+      const res = await axios
+      .put("/scores", newScore)
+      return res;
+    } catch (error) {
+      console.log(error.response); // this is the main part. Use the response property from the error object
+      return error.response;
+    }
+    },
   // deletes score by given ID from db
   async deleteScore(scoreId: string) {
     const response = await axios.delete("/scores" + scoreId);

@@ -8,6 +8,12 @@
           <v-form v-model="isFormValid">
           <v-text-field :rules="[rules.required, rules.counter]" maxlength="5" dense v-model="scoreData.name" label="Name" color="yellow" background-color="white">
           </v-text-field>
+          <v-alert dense v-if="!responseSuccess && requestFired" type="error" outlined>
+            {{errorMessage}}
+          </v-alert>
+           <v-alert dense v-if="responseSuccess && requestFired" type="success" outlined>
+            Sucess
+          </v-alert>
           </v-form>
         </v-col >
          <v-col cols="2" justify-center align-center>
@@ -103,7 +109,9 @@ export default Vue.extend({
             const pattern = /w{5}/
             return pattern.test(value) || 'invalid user name'
           }
-       }
+       },
+       errorMessage : "",
+       requestFired : false
   })
   ,    
   props: {
@@ -117,10 +125,20 @@ export default Vue.extend({
     },
     // use api to save new score
     createScore: async function () {
-      await apiConnect.createScore(this.scoreData);
-      this.isFormValid = false
-      await this.readTopTenScores();
-      this.responseSuccess = true;
+      const scoreResponse = await apiConnect.createScore(this.scoreData)
+      console.log(scoreResponse)
+
+      if (scoreResponse.status >= 200 && scoreResponse.status <300){
+        this.responseSuccess = true
+        this.errorMessage = ""
+        this.isFormValid = false
+        await this.readTopTenScores();
+      }
+      else{
+        this.responseSuccess = false;
+        this.errorMessage = "Fehler: " + scoreResponse.status
+      }
+      this.requestFired = true
     },
     async restartGame(){
     this.phaserEventDispatcher.emit('restartGame')
