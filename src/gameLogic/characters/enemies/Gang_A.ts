@@ -1,6 +1,6 @@
-import CharacterKeys from "@/gameLogic/textureKeys/CharacterKeys";
-import { GameObjects, Scene } from "phaser";
-import Enemy from "./Enemy";
+import CharacterKeys from '@/gameLogic/textureKeys/CharacterKeys';
+import { GameObjects, Scene } from 'phaser';
+import Enemy from './Enemy';
 
 export default abstract class Gang_A extends Phaser.Physics.Arcade.Group {
   bruteSpriteKey = CharacterKeys.BRUTE;
@@ -24,7 +24,7 @@ export default abstract class Gang_A extends Phaser.Physics.Arcade.Group {
 
   //callback to kill any enemy touching the lower bound
   killCallback(gameObject: GameObjects.GameObject) {
-    (<Enemy>gameObject).body.world.on("worldbounds", function(
+    (<Enemy>gameObject).body.world.on('worldbounds', function(
       body: Phaser.Physics.Arcade.Body,
       blockedUp: boolean,
       blockedDown: boolean,

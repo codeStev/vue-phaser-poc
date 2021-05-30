@@ -1,31 +1,28 @@
-import axios from "axios";
+import axios from 'axios';
 
 const apiClient = {
   // gets all scores from db
   async readAllScores() {
-    const response = await axios.get("/scores");
+    const response = await axios.get('/scores');
     return response.data;
   },
   // gets top tenn scores from db
   async readTopTenScores() {
-    const response = await axios.get("/topten");
+    const response = await axios.get('/topten');
     return response.data;
   },
   // sends new score to db
   async createScore(newScore: any) {
- 
-     try {
-      const res = await axios
-      .put("/scores", newScore)
+    try {
+      const res = await axios.put('/scores', newScore);
       return res;
     } catch (error) {
-      console.log(error.response); // this is the main part. Use the response property from the error object
       return error.response;
     }
-    },
+  },
   // deletes score by given ID from db
   async deleteScore(scoreId: string) {
-    const response = await axios.delete("/scores" + scoreId);
+    const response = await axios.delete('/scores' + scoreId);
     return response.data;
   },
 };

@@ -1,12 +1,12 @@
-import Vue from 'vue'
-import Vuex, { Module } from 'vuex'
+import Vue from 'vue';
+import Vuex, { Module } from 'vuex';
 
-import game from './modules/Game'
-import score from './modules/Score'
-import gameOver from './modules/GameOver'
-import sceneInformation from './modules/SceneInformation'
+import game from './modules/Game';
+import score from './modules/Score';
+import gameOver from './modules/GameOver';
+import sceneInformation from './modules/SceneInformation';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {},
@@ -14,10 +14,8 @@ const store = new Vuex.Store({
     game,
     score,
     gameOver,
-    sceneInformation
+    sceneInformation,
+  },
+});
 
-    
-  }
-})
-
-export default store
+export default store;

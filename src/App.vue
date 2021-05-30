@@ -1,12 +1,7 @@
 <template>
   <v-app id="app">
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-    </v-app-bar>
-     <router-view></router-view>
+    <v-app-bar app color="primary" dark> </v-app-bar>
+    <router-view></router-view>
   </v-app>
 </template>
 
@@ -16,11 +11,8 @@ import Vue from 'vue';
 export default Vue.extend({
   name: 'App',
 
-  components: {
-    
-  },
+  components: {},
 
-  data: () => ({
-  })
+  data: () => ({}),
 });
 </script>

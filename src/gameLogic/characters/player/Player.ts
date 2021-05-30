@@ -1,8 +1,8 @@
-import CharacterKeys from "@/gameLogic/textureKeys/CharacterKeys";
-import LaserGroup from "@/gameLogic/object/laser/LaserGroup";
-import LaserKeys from "@/gameLogic/textureKeys/LaserKeys";
-import Phaser from "phaser";
-import Character from "../Character";
+import CharacterKeys from '@/gameLogic/textureKeys/CharacterKeys';
+import LaserGroup from '@/gameLogic/object/laser/LaserGroup';
+import LaserKeys from '@/gameLogic/textureKeys/LaserKeys';
+import Phaser from 'phaser';
+import Character from '../Character';
 
 //add player method to Phaser interface GameObjectFactory
 declare global {
@@ -58,16 +58,16 @@ export default class Player extends Character {
       this.laserGroup.fireBullet(this.x, this.y - 20, true, this.damage);
     }
 
-	//score text update
-	this.setScoreText()
+    //score text update
+    this.setScoreText();
   }
 
-  takeDamage(damage: number) : boolean{
+  takeDamage(damage: number): boolean {
     this.lifepoints -= damage;
     this.loseLifePoint(damage);
     if (this.lifepoints <= 0) {
-		//this.scene.scene.pause()
-		return true;
+      //this.scene.scene.pause()
+      return true;
     }
     return false;
   }
@@ -76,7 +76,11 @@ export default class Player extends Character {
   createLifePoints() {
     for (let i = 0; i < this.lifepoints; i++) {
       this.playerLifes.push(
-        this.scene.add.sprite(this.scene.cameras.main.centerX * 0.055 * (i + 1), this.scene.cameras.main.centerY * 1.94, CharacterKeys.PLAYERLIFE)
+        this.scene.add.sprite(
+          this.scene.cameras.main.centerX * 0.055 * (i + 1),
+          this.scene.cameras.main.centerY * 1.94,
+          CharacterKeys.PLAYERLIFE
+        )
       );
     }
   }
@@ -91,32 +95,34 @@ export default class Player extends Character {
     }
   }
 
-  //adds score text to scene  
-  addScoreText(){
-    const posX = this.scene.cameras.main.centerX * 0.045
-    const posY = this.scene.cameras.main.centerY * 1.86
-    this.scoreText = this.scene.add.text(posX, posY,'',{font: '30px Courier',color: '#f0e130'})
-
+  //adds score text to scene
+  addScoreText() {
+    const posX = this.scene.cameras.main.centerX * 0.045;
+    const posY = this.scene.cameras.main.centerY * 1.86;
+    this.scoreText = this.scene.add.text(posX, posY, '', {
+      font: '30px Courier',
+      color: '#f0e130',
+    });
   }
 
   //set score text in scene
-  setScoreText(){
+  setScoreText() {
     this.scoreText.setText(this.score.toString());
-} 
+  }
 
   //add score to player
-  addScore(points : number){
-	this.score += points
+  addScore(points: number) {
+    this.score += points;
   }
 
   //subtracts points from score
-  loseScore(points : number){
-	this.score -= points
+  loseScore(points: number) {
+    this.score -= points;
   }
 }
 
 //register added method player on GameObjectFactory implementation
-Phaser.GameObjects.GameObjectFactory.register("player", function(
+Phaser.GameObjects.GameObjectFactory.register('player', function(
   this: Phaser.GameObjects.GameObjectFactory,
   x: number,
   y: number,

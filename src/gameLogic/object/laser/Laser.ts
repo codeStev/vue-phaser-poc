@@ -1,5 +1,5 @@
-import { v4 as uuidv4 } from "uuid";
-import LaserKeys from "@/gameLogic/textureKeys/LaserKeys";
+import { v4 as uuidv4 } from 'uuid';
+import LaserKeys from '@/gameLogic/textureKeys/LaserKeys';
 export default class Laser extends Phaser.Physics.Arcade.Sprite {
   body: Phaser.Physics.Arcade.Body;
   damage: number;

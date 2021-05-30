@@ -1,6 +1,6 @@
-import Phaser from "phaser";
-import Character from "@/gameLogic/characters/Character";
-import { v4 as uuidv4 } from "uuid";
+import Phaser from 'phaser';
+import Character from '@/gameLogic/characters/Character';
+import { v4 as uuidv4 } from 'uuid';
 
 declare global {
   namespace Phaser.GameObjects {
@@ -50,7 +50,7 @@ export default class Protection extends Character {
 }
 
 //register added method protection on GameObjectFactory implementation
-Phaser.GameObjects.GameObjectFactory.register("protection", function(
+Phaser.GameObjects.GameObjectFactory.register('protection', function(
   this: Phaser.GameObjects.GameObjectFactory,
   x: number,
   y: number,

@@ -1,5 +1,5 @@
-import Laser from "./Laser";
-import LaserKeys from "@/gameLogic/textureKeys/LaserKeys";
+import Laser from './Laser';
+import LaserKeys from '@/gameLogic/textureKeys/LaserKeys';
 
 export default class LaserGroup extends Phaser.Physics.Arcade.Group {
   constructor(scene: Phaser.Scene) {

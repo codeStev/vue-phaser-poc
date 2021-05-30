@@ -1,7 +1,7 @@
-import Enemy from "@/gameLogic/characters/enemies/Enemy";
-import LaserGroupEnemy from "@/gameLogic/object/laser/LaserGroupEnemy";
-import LaserKeys from "@/gameLogic/textureKeys/LaserKeys";
-import { GameObjects } from "phaser";
+import Enemy from '@/gameLogic/characters/enemies/Enemy';
+import LaserGroupEnemy from '@/gameLogic/object/laser/LaserGroupEnemy';
+import LaserKeys from '@/gameLogic/textureKeys/LaserKeys';
+import { GameObjects } from 'phaser';
 
 export default class ShootingEnemy extends Enemy {
   lasers: LaserGroupEnemy;

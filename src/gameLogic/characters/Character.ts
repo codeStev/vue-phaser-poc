@@ -1,27 +1,30 @@
-
 import { v4 as uuidv4 } from 'uuid';
-export default class Character extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number){
-        super(scene,x,y,texture,frame)
-        this.setName(uuidv4())
-    }
-    body :  Phaser.Physics.Arcade.Body;
-    lifepoints : number;
+export default class Character extends Phaser.Physics.Arcade.Sprite {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    frame?: string | number
+  ) {
+    super(scene, x, y, texture, frame);
+    this.setName(uuidv4());
+  }
+  body: Phaser.Physics.Arcade.Body;
+  lifepoints: number;
 
-    public takeDamage(damage :number) : boolean{
-        this.lifepoints -= damage
-        if(this.lifepoints <= 0){
-            this.kill();
-            return true;
-        }
-        return false;
+  public takeDamage(damage: number): boolean {
+    this.lifepoints -= damage;
+    if (this.lifepoints <= 0) {
+      this.kill();
+      return true;
     }
+    return false;
+  }
 
-    kill(){
-        this.setActive(false)
-        this.setVisible(false)
-        this.destroy();
-    }
-
-    
+  kill() {
+    this.setActive(false);
+    this.setVisible(false);
+    this.destroy();
+  }
 }

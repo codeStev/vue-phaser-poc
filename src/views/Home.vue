@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="home">
-<game-component></game-component>  
-</v-container>
+    <game-component></game-component>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -10,7 +10,8 @@ import GameComponent from '@/components/GameComponent.vue'; // @ is an alias to 
 
 @Component({
   components: {
-    GameComponent},
+    GameComponent,
+  },
 })
 export default class Home extends Vue {}
 </script>

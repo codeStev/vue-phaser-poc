@@ -1,10 +1,10 @@
-const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-const os = require("os");
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const os = require('os');
 module.exports = {
-  transpileDependencies: ["vuetify"],
+  transpileDependencies: ['vuetify'],
   chainWebpack: (config) => {
-    const imageRule = config.module.rule("images");
-    const gameAssetRule = config.module.rule("gameAssets");
+    const imageRule = config.module.rule('images');
+    const gameAssetRule = config.module.rule('gameAssets');
     //const jsonRule = config.module.rule('GameAtlas')
 
     //ggf noch fallback
@@ -16,8 +16,8 @@ module.exports = {
       .add(/src\/game\/gameAssets/)
       .add(/src\\game\\gameAssets/)
       .end()
-      .use("url-loader")
-      .loader("url-loader")
+      .use('url-loader')
+      .loader('url-loader')
       .tap((options) => {
         limit = 4096;
         // fallback = 'file-loader'
@@ -31,8 +31,8 @@ module.exports = {
       .include.add(/src\/game\/gameAssets/)
       .add(/src\\game\\gameAssets/)
       .end()
-      .use("file-loader")
-      .loader("file-loader?name=[name].[ext]")
+      .use('file-loader')
+      .loader('file-loader?name=[name].[ext]')
       .end();
 
     // jsonRule
@@ -43,7 +43,7 @@ module.exports = {
     //   .use('json-loader')
     //     .loader('json-loader?name=[name].[ext]')
     //     .end()
-    config.plugin("fork-ts-checker").tap((args) => {
+    config.plugin('fork-ts-checker').tap((args) => {
       let totalmem = Math.floor(os.totalmem() / 1024 / 1024);
       let allowUseMem = totalmem > 12000 ? 4096 : 1000;
       args[0].memoryLimit = allowUseMem;
@@ -53,8 +53,8 @@ module.exports = {
   //CORS Error Fix
   devServer: {
     proxy: {
-      "^/api": {
-        target: "http://localhost:8081",
+      '^/api': {
+        target: 'http://localhost:8081',
         changeOrigin: true,
       },
     },
